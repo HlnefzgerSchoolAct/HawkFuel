@@ -8,6 +8,7 @@
     "build": "react-scripts build",
     "generate-icons": "node scripts/generate-icons.js",
     "generate-sw": "node scripts/generate-sw.js",
+     "postbuild": "node scripts/generate-sw.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
