@@ -26,37 +26,21 @@
 .hydration-goal {
   color: var(--off-white);
   font-size: 0.95em;
-  margin: 0;
+  margin: 0 0 5px 0;
   font-weight: 600;
   letter-spacing: 1px;
 }
 
+.hydration-personalized {
+  color: var(--primary-orange);
+  font-size: 0.85em;
+  margin: 5px 0 0 0;
+  font-weight: 600;
+  font-style: italic;
+}
+
 .hydration-display {
   margin-bottom: 25px;
-}
-
-.water-drops {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.water-drop {
-  font-size: 2em;
-  transition: all 0.3s ease;
-  display: inline-block;
-}
-
-.water-drop.filled {
-  filter: drop-shadow(0 0 8px rgba(52, 152, 219, 0.8));
-  transform: scale(1.1);
-}
-
-.water-drop.empty {
-  opacity: 0.3;
-  filter: grayscale(100%);
 }
 
 .hydration-counter {

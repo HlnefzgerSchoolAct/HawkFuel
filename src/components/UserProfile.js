@@ -80,7 +80,7 @@ function UserProfile({ onSubmit }) {
   return (
     <div className="user-profile">
       {/* Header */}
-      <h2>👤 Tell Us About Yourself</h2>
+      <h2>Tell Us About Yourself</h2>
       
       {/* Form starts here */}
       <form onSubmit={handleSubmit}>

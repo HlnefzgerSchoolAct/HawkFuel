@@ -12,12 +12,12 @@ import './ActivityTracker.css';
  * Formula: Calories = MET × Weight(kg) × Time(hours)
  */
 const ACTIVITIES = [
-  { id: 'walking', name: 'Walking', met: 3.5, emoji: '🚶' },
-  { id: 'running', name: 'Running', met: 10.0, emoji: '🏃' },
-  { id: 'lifting', name: 'Weight Lifting', met: 5.0, emoji: '🏋️' },
-  { id: 'wrestling', name: 'Wrestling', met: 6.0, emoji: '🤼' },
-  { id: 'football', name: 'Football Practice', met: 8.0, emoji: '🏈' },
-  { id: 'cycling', name: 'Cycling', met: 7.5, emoji: '🚴' }
+  { id: 'walking', name: 'Walking', met: 3.5 },
+  { id: 'running', name: 'Running', met: 10.0 },
+  { id: 'lifting', name: 'Weight Lifting', met: 5.0 },
+  { id: 'wrestling', name: 'Wrestling', met: 6.0 },
+  { id: 'football', name: 'Football Practice', met: 8.0 },
+  { id: 'cycling', name: 'Cycling', met: 7.5 }
 ];
 
 /**
@@ -106,7 +106,7 @@ function ActivityTracker({ userProfile, onSubmit, onBack }) {
   return (
     <div className="activity-tracker">
       {/* Header */}
-      <h2>🏃 Track Your Activities</h2>
+      <h2>Track Your Activities</h2>
       <p className="subtitle">Enter the minutes you spent on each activity today</p>
 
       {/* Form */}
@@ -120,9 +120,8 @@ function ActivityTracker({ userProfile, onSubmit, onBack }) {
             // Each card needs a unique "key" for React
             <div key={activity.id} className="activity-card">
               
-              {/* Activity Header: Emoji + Name */}
+              {/* Activity Header: Name */}
               <div className="activity-header">
-                <span className="activity-emoji">{activity.emoji}</span>
                 <h3>{activity.name}</h3>
               </div>
               
@@ -153,12 +152,12 @@ function ActivityTracker({ userProfile, onSubmit, onBack }) {
         <div className="button-group">
           {/* Back Button: Returns to previous step */}
           <button type="button" onClick={onBack} className="btn-secondary">
-            ← Back
+            Back
           </button>
           
           {/* Submit Button: Validates and proceeds */}
           <button type="submit" className="btn-primary">
-            Calculate Results →
+            Calculate Results
           </button>
         </div>
       </form>

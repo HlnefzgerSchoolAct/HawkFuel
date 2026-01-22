@@ -73,18 +73,18 @@ function Results({ userProfile, activities, onComplete, onReset }) {
 
   return (
     <div className="results">
-      <h2>📊 Your Personalized Results</h2>
+      <h2>Your Personalized Results</h2>
 
       {/* BMR Section */}
       <div className="result-section">
-        <h3>🔥 BMR (Basal Metabolic Rate)</h3>
+        <h3>BMR (Basal Metabolic Rate)</h3>
         <div className="big-number">{bmr.toLocaleString()}</div>
         <p className="description">Calories burned at complete rest per day</p>
       </div>
 
       {/* TDEE Section */}
       <div className="result-section">
-        <h3>⚡ TDEE (Total Daily Energy Expenditure)</h3>
+        <h3>TDEE (Total Daily Energy Expenditure)</h3>
         <div className="big-number">{tdee.toLocaleString()}</div>
         <p className="description">
           Your maintenance calories based on {' '}
@@ -94,7 +94,7 @@ function Results({ userProfile, activities, onComplete, onReset }) {
 
       {/* Daily Target Section */}
       <div className="result-section highlight">
-        <h3>🎯 Your Daily Calorie Target</h3>
+        <h3>Your Daily Calorie Target</h3>
         <div className="big-number">{dailyTarget.toLocaleString()}</div>
         <p className="description">
           {userProfile.goal === 'maintain' && 'To maintain your current weight'}
@@ -106,12 +106,11 @@ function Results({ userProfile, activities, onComplete, onReset }) {
       {/* Activity Calories Section */}
       {activityCalories.length > 0 && (
         <div className="result-section">
-          <h3>🏃 Today's Activity Breakdown</h3>
+          <h3>Today's Activity Breakdown</h3>
           <div className="activity-breakdown">
             {activityCalories.map(activity => (
               <div key={activity.id} className="activity-result">
                 <div className="activity-result-header">
-                  <span className="activity-emoji">{activity.emoji}</span>
                   <span className="activity-name">{activity.name}</span>
                 </div>
                 <div className="activity-details">
@@ -130,7 +129,7 @@ function Results({ userProfile, activities, onComplete, onReset }) {
 
       {/* Summary */}
       <div className="result-section summary">
-        <h3>📝 Daily Summary</h3>
+        <h3>Daily Summary</h3>
         <div className="summary-grid">
           <div className="summary-item">
             <span className="summary-label">Calorie Target:</span>
@@ -153,10 +152,10 @@ function Results({ userProfile, activities, onComplete, onReset }) {
           onClick={() => onComplete(dailyTarget)} 
           className="btn-continue"
         >
-          ➡️ Continue to Daily Tracker
+          Continue to Daily Tracker
         </button>
         <button onClick={onReset} className="btn-reset">
-          🔄 Start Over
+          Start Over
         </button>
       </div>
     </div>

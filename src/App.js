@@ -112,7 +112,7 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>🔥 Hawk Fuel</h1>
+        <h1>Hawk Fuel</h1>
         <p>Your Personal Calorie & Activity Tracker</p>
       </header>
 
@@ -174,13 +174,13 @@ function App() {
 
           <div className="footer-disclaimers">
             <p className="privacy-notice">
-              🔒 <strong>Privacy:</strong> All your data is stored locally on
+              <strong>Privacy:</strong> All your data is stored locally on
               your device only. We don't collect, send, or share any of your
               personal information.
             </p>
 
             <p className="educational-disclaimer">
-              📚 <strong>Educational Tool:</strong> This app is designed for
+              <strong>Educational Tool:</strong> This app is designed for
               educational purposes to help you learn about nutrition and
               fitness. It is not medical advice. Please consult a healthcare
               professional, parent, or school nurse for personalized health

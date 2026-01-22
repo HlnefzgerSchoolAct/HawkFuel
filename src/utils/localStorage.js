@@ -1,8 +1,8 @@
 /**
  * localStorage Utility Functions
- * 
+ *
  * Purpose: Save and load data from browser's localStorage
- * 
+ *
  * localStorage is like a permanent notepad in your browser:
  * - Data persists even after closing browser
  * - Stored as strings (we convert objects to/from JSON)
@@ -12,20 +12,20 @@
 
 // STORAGE KEYS - Like labels on folders
 const STORAGE_KEYS = {
-  USER_PROFILE: 'hawkfuel_user_profile',      // User's age, weight, goals, etc.
-  DAILY_TARGET: 'hawkfuel_daily_target',      // Target calories for the day
-  FOOD_LOG: 'hawkfuel_food_log',              // All food entries
-  EXERCISE_LOG: 'hawkfuel_exercise_log',      // All exercise entries
-  CURRENT_DATE: 'hawkfuel_current_date',      // Today's date (to reset daily)
-  WEEKLY_HISTORY: 'hawkfuel_weekly_history',  // Last 7 days of data
-  WATER_LOG: 'hawkfuel_water_log'             // Daily water intake (NEW!)
+  USER_PROFILE: "hawkfuel_user_profile", // User's age, weight, goals, etc.
+  DAILY_TARGET: "hawkfuel_daily_target", // Target calories for the day
+  FOOD_LOG: "hawkfuel_food_log", // All food entries
+  EXERCISE_LOG: "hawkfuel_exercise_log", // All exercise entries
+  CURRENT_DATE: "hawkfuel_current_date", // Today's date (to reset daily)
+  WEEKLY_HISTORY: "hawkfuel_weekly_history", // Last 7 days of data
+  WATER_LOG: "hawkfuel_water_log", // Daily water intake (NEW!)
 };
 
 /**
  * saveToLocalStorage
- * 
+ *
  * Saves any data to localStorage
- * 
+ *
  * @param {string} key - The storage key (like a label)
  * @param {any} data - The data to save (object, array, string, number)
  */
@@ -33,21 +33,21 @@ export const saveToLocalStorage = (key, data) => {
   try {
     // Convert JavaScript object to JSON string
     const jsonString = JSON.stringify(data);
-    
+
     // Save to localStorage
     localStorage.setItem(key, jsonString);
-    
+
     console.log(`✅ Saved to localStorage: ${key}`);
   } catch (error) {
-    console.error('❌ Error saving to localStorage:', error);
+    console.error("❌ Error saving to localStorage:", error);
   }
 };
 
 /**
  * loadFromLocalStorage
- * 
+ *
  * Loads data from localStorage
- * 
+ *
  * @param {string} key - The storage key to load
  * @param {any} defaultValue - What to return if nothing is saved
  * @returns {any} The saved data or defaultValue
@@ -56,28 +56,28 @@ export const loadFromLocalStorage = (key, defaultValue = null) => {
   try {
     // Get the JSON string from localStorage
     const jsonString = localStorage.getItem(key);
-    
+
     // If nothing saved, return default
     if (jsonString === null) {
       return defaultValue;
     }
-    
+
     // Convert JSON string back to JavaScript object
     const data = JSON.parse(jsonString);
-    
+
     console.log(`✅ Loaded from localStorage: ${key}`);
     return data;
   } catch (error) {
-    console.error('❌ Error loading from localStorage:', error);
+    console.error("❌ Error loading from localStorage:", error);
     return defaultValue;
   }
 };
 
 /**
  * clearLocalStorage
- * 
+ *
  * Removes data from localStorage
- * 
+ *
  * @param {string} key - The storage key to remove
  */
 export const clearLocalStorage = (key) => {
@@ -85,39 +85,39 @@ export const clearLocalStorage = (key) => {
     localStorage.removeItem(key);
     console.log(`✅ Cleared from localStorage: ${key}`);
   } catch (error) {
-    console.error('❌ Error clearing localStorage:', error);
+    console.error("❌ Error clearing localStorage:", error);
   }
 };
 
 /**
  * clearAllData
- * 
+ *
  * Removes ALL Hawk Fuel data from localStorage
  * Use when user wants to start fresh
  */
 export const clearAllData = () => {
-  Object.values(STORAGE_KEYS).forEach(key => {
+  Object.values(STORAGE_KEYS).forEach((key) => {
     clearLocalStorage(key);
   });
-  console.log('✅ All Hawk Fuel data cleared!');
+  console.log("✅ All Hawk Fuel data cleared!");
 };
 
 /**
  * getTodaysDate
- * 
+ *
  * Returns today's date as a string (YYYY-MM-DD)
  * Used to check if we need to reset daily logs
  */
 export const getTodaysDate = () => {
   const today = new Date();
-  return today.toISOString().split('T')[0]; // "2026-01-22"
+  return today.toISOString().split("T")[0]; // "2026-01-22"
 };
 
 /**
  * checkAndResetDaily
- * 
+ *
  * Checks if it's a new day, and resets daily logs if so
- * 
+ *
  * How it works:
  * 1. Load the saved date
  * 2. Compare to today's date
@@ -127,15 +127,15 @@ export const getTodaysDate = () => {
 export const checkAndResetDaily = () => {
   const savedDate = loadFromLocalStorage(STORAGE_KEYS.CURRENT_DATE);
   const todaysDate = getTodaysDate();
-  
+
   // If it's a new day, reset daily logs
   if (savedDate !== todaysDate) {
-    console.log('🌅 New day detected! Resetting daily logs...');
-    
+    console.log("New day detected! Resetting daily logs...");
+
     // Clear yesterday's food and exercise
     clearLocalStorage(STORAGE_KEYS.FOOD_LOG);
     clearLocalStorage(STORAGE_KEYS.EXERCISE_LOG);
-    
+
     // Save today's date
     saveToLocalStorage(STORAGE_KEYS.CURRENT_DATE, todaysDate);
   }
@@ -183,7 +183,7 @@ export const addFoodEntry = (foodEntry) => {
   const newEntry = {
     id: Date.now(), // Unique ID using timestamp
     ...foodEntry,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
   currentLog.push(newEntry);
   saveFoodLog(currentLog);
@@ -192,7 +192,7 @@ export const addFoodEntry = (foodEntry) => {
 
 export const deleteFoodEntry = (entryId) => {
   const currentLog = loadFoodLog();
-  const updatedLog = currentLog.filter(entry => entry.id !== entryId);
+  const updatedLog = currentLog.filter((entry) => entry.id !== entryId);
   saveFoodLog(updatedLog);
 };
 
@@ -214,7 +214,7 @@ export const addExerciseEntry = (exerciseEntry) => {
   const newEntry = {
     id: Date.now(),
     ...exerciseEntry,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
   currentLog.push(newEntry);
   saveExerciseLog(currentLog);
@@ -223,7 +223,7 @@ export const addExerciseEntry = (exerciseEntry) => {
 
 export const deleteExerciseEntry = (entryId) => {
   const currentLog = loadExerciseLog();
-  const updatedLog = currentLog.filter(entry => entry.id !== entryId);
+  const updatedLog = currentLog.filter((entry) => entry.id !== entryId);
   saveExerciseLog(updatedLog);
 };
 
@@ -253,9 +253,9 @@ export const getRemainingCalories = () => {
 
 /**
  * WEEKLY HISTORY FUNCTIONS (NEW!)
- * 
+ *
  * Track daily totals for the last 7 days to show in graph
- * 
+ *
  * Data Structure:
  * {
  *   "2026-01-22": { eaten: 2100, burned: 450, target: 2000 },
@@ -266,9 +266,9 @@ export const getRemainingCalories = () => {
 
 /**
  * saveWeeklyHistory
- * 
+ *
  * Saves the weekly history object to localStorage
- * 
+ *
  * @param {Object} history - Object with dates as keys
  */
 export const saveWeeklyHistory = (history) => {
@@ -277,9 +277,9 @@ export const saveWeeklyHistory = (history) => {
 
 /**
  * loadWeeklyHistory
- * 
+ *
  * Loads the weekly history from localStorage
- * 
+ *
  * @returns {Object} History object (or empty object if none)
  */
 export const loadWeeklyHistory = () => {
@@ -288,10 +288,10 @@ export const loadWeeklyHistory = () => {
 
 /**
  * saveDailyDataToHistory
- * 
+ *
  * Saves today's totals to the weekly history
  * Called whenever food/exercise is logged
- * 
+ *
  * How it works:
  * 1. Get today's date (YYYY-MM-DD format)
  * 2. Calculate today's totals
@@ -305,24 +305,24 @@ export const saveDailyDataToHistory = () => {
   const eaten = getTotalCaloriesEaten();
   const burned = getTotalCaloriesBurned();
   const target = loadDailyTarget();
-  
+
   // Load existing history
   const history = loadWeeklyHistory();
-  
+
   // Add/update today's data
   history[today] = {
     eaten: eaten,
     burned: burned,
-    target: target
+    target: target,
   };
-  
+
   // Keep only last 7 days
   const dates = Object.keys(history).sort(); // Sort dates
   if (dates.length > 7) {
     // Remove oldest dates
     const datesToKeep = dates.slice(-7); // Keep last 7
     const newHistory = {};
-    datesToKeep.forEach(date => {
+    datesToKeep.forEach((date) => {
       newHistory[date] = history[date];
     });
     saveWeeklyHistory(newHistory);
@@ -333,13 +333,13 @@ export const saveDailyDataToHistory = () => {
 
 /**
  * getWeeklyGraphData
- * 
+ *
  * Formats weekly history into structure needed for Chart.js
- * 
+ *
  * Returns data for last 7 days (fills missing days with zeros)
- * 
+ *
  * @returns {Object} Graph data with labels and datasets
- * 
+ *
  * Structure:
  * {
  *   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -352,30 +352,30 @@ export const saveDailyDataToHistory = () => {
  */
 export const getWeeklyGraphData = () => {
   const history = loadWeeklyHistory();
-  
+
   // Get last 7 days (including today)
   const last7Days = [];
   const today = new Date();
-  
+
   for (let i = 6; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(today.getDate() - i);
-    last7Days.push(date.toISOString().split('T')[0]); // YYYY-MM-DD
+    last7Days.push(date.toISOString().split("T")[0]); // YYYY-MM-DD
   }
-  
+
   // Create labels (day names)
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const labels = last7Days.map(dateStr => {
-    const date = new Date(dateStr + 'T12:00:00'); // Add time to avoid timezone issues
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const labels = last7Days.map((dateStr) => {
+    const date = new Date(dateStr + "T12:00:00"); // Add time to avoid timezone issues
     return dayNames[date.getDay()];
   });
-  
+
   // Extract data for each dataset
   const eatenData = [];
   const burnedData = [];
   const targetData = [];
-  
-  last7Days.forEach(dateStr => {
+
+  last7Days.forEach((dateStr) => {
     const dayData = history[dateStr];
     if (dayData) {
       // We have data for this day
@@ -389,34 +389,34 @@ export const getWeeklyGraphData = () => {
       targetData.push(0);
     }
   });
-  
+
   // Return Chart.js compatible format
   return {
     labels: labels,
     datasets: [
       {
-        label: 'Calories Eaten',
+        label: "Calories Eaten",
         data: eatenData,
-        borderColor: 'rgb(231, 76, 60)', // Red
-        backgroundColor: 'rgba(231, 76, 60, 0.1)',
-        tension: 0.3 // Curved lines
+        borderColor: "rgb(231, 76, 60)", // Red
+        backgroundColor: "rgba(231, 76, 60, 0.1)",
+        tension: 0.3, // Curved lines
       },
       {
-        label: 'Calories Burned',
+        label: "Calories Burned",
         data: burnedData,
-        borderColor: 'rgb(243, 156, 18)', // Orange
-        backgroundColor: 'rgba(243, 156, 18, 0.1)',
-        tension: 0.3
+        borderColor: "rgb(243, 156, 18)", // Orange
+        backgroundColor: "rgba(243, 156, 18, 0.1)",
+        tension: 0.3,
       },
       {
-        label: 'Target Calories',
+        label: "Target Calories",
         data: targetData,
-        borderColor: 'rgb(52, 152, 219)', // Blue
-        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+        borderColor: "rgb(52, 152, 219)", // Blue
+        backgroundColor: "rgba(52, 152, 219, 0.1)",
         tension: 0.3,
-        borderDash: [5, 5] // Dashed line for target
-      }
-    ]
+        borderDash: [5, 5], // Dashed line for target
+      },
+    ],
   };
 };
 
