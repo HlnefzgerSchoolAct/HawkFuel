@@ -122,17 +122,49 @@
   background: var(--dark-gray);
   color: white;
   text-align: center;
-  padding: 30px;
+  padding: 30px 20px;
   margin-top: 60px;
   border-top: 4px solid var(--primary-orange);
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.7);
 }
 
-.app-footer p {
-  margin: 0;
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-brand {
+  margin: 0 0 25px 0;
   opacity: 0.9;
   letter-spacing: 2px;
   font-weight: 500;
+  font-size: 0.95em;
+}
+
+.footer-disclaimers {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.privacy-notice,
+.educational-disclaimer {
+  background: var(--medium-gray);
+  padding: 15px 20px;
+  border-radius: 10px;
+  border-left: 4px solid var(--primary-orange);
+  margin: 0;
+  font-size: 0.9em;
+  line-height: 1.6;
+  text-align: left;
+  color: var(--off-white);
+}
+
+.privacy-notice strong,
+.educational-disclaimer strong {
+  color: var(--primary-orange);
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
