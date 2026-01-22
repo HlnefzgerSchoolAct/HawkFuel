@@ -4,13 +4,15 @@
 
 ### 🔒 Standalone Mode Enforcement
 
-The app now **ONLY works when installed to the homescreen** as a Progressive Web App (PWA). 
+The app now **ONLY works when installed to the homescreen** as a Progressive Web App (PWA).
 
 #### What happens:
+
 - **Browser access**: Shows installation instructions screen
 - **Installed app**: Full functionality unlocked
 
 #### Detection Methods:
+
 ```javascript
 // Checks three different methods
 1. display-mode: standalone (Standard PWA)
@@ -41,11 +43,16 @@ When users try to access the app in a browser, they see:
 ### 📲 Mobile Optimizations
 
 #### Viewport Settings (index.html)
+
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+/>
 ```
 
 **Features**:
+
 - ✅ Prevents pinch zoom (app-like experience)
 - ✅ iOS safe area support (notch-aware)
 - ✅ Viewport fit to screen edges
@@ -53,11 +60,13 @@ When users try to access the app in a browser, they see:
 #### Touch-Friendly Design
 
 **Minimum Touch Targets**:
+
 - All buttons/inputs: **minimum 44px height** (iOS HIG standard)
 - Prevents accidental taps
 - Better accessibility
 
 **Touch Actions**:
+
 ```css
 touch-action: manipulation; /* Prevents double-tap zoom */
 -webkit-tap-highlight-color: rgba(255, 107, 53, 0.2); /* Orange tap feedback */
@@ -65,14 +74,17 @@ user-select: none; /* No text selection on buttons */
 ```
 
 #### iOS Safe Area Support
+
 ```css
-padding: env(safe-area-inset-top) env(safe-area-inset-right) 
-         env(safe-area-inset-bottom) env(safe-area-inset-left);
+padding: env(safe-area-inset-top) env(safe-area-inset-right)
+  env(safe-area-inset-bottom) env(safe-area-inset-left);
 ```
+
 - Content avoids iPhone notch/home indicator
 - Works on all iOS devices
 
 #### Smooth Scrolling
+
 ```css
 -webkit-overflow-scrolling: touch; /* Native smooth scrolling */
 ```
@@ -80,16 +92,19 @@ padding: env(safe-area-inset-top) env(safe-area-inset-right)
 ### 📐 Responsive Breakpoints
 
 #### Desktop (> 768px)
+
 - Full grid layouts
 - 4-column summary cards
 - 2-column food/exercise logging
 
 #### Tablet (480px - 768px)
+
 - 2-column summary cards
 - Smaller padding
 - Optimized font sizes
 
 #### Mobile (< 480px)
+
 - Single column layouts
 - Larger touch targets
 - Simplified navigation
@@ -99,6 +114,7 @@ padding: env(safe-area-inset-top) env(safe-area-inset-right)
 ### 🎨 Install Prompt Styling
 
 The installation screen is:
+
 - **Responsive**: Looks great on all screen sizes
 - **Branded**: Hawk Fuel logo, colors, and typography
 - **Clear**: Step-by-step instructions with numbered lists
@@ -114,7 +130,7 @@ The installation screen is:
 
 ### Test Mobile Responsiveness:
 
-1. **Chrome DevTools**: 
+1. **Chrome DevTools**:
    - F12 → Toggle device toolbar
    - Test iPhone 12, Pixel 5, iPad
    - Try portrait and landscape
@@ -136,6 +152,7 @@ The installation screen is:
 ## 📊 Performance Benefits
 
 ### Installed PWA vs Browser:
+
 - **Faster load**: No browser UI overhead
 - **Offline capable**: Service worker caching
 - **Full screen**: No browser chrome
@@ -145,6 +162,7 @@ The installation screen is:
 ## 🔧 Technical Details
 
 ### Files Modified:
+
 1. **src/App.js**: Added standalone detection, install prompt component
 2. **src/App.css**: Install prompt styling, responsive improvements
 3. **src/index.css**: Touch optimizations, safe area support
@@ -152,6 +170,7 @@ The installation screen is:
 5. **public/index.html**: Viewport meta tags, mobile optimizations
 
 ### Key Technologies:
+
 - `window.matchMedia('(display-mode: standalone)')` - Standard PWA detection
 - `window.navigator.standalone` - iOS Safari detection
 - `document.referrer.includes('android-app://')` - Android detection
@@ -161,6 +180,7 @@ The installation screen is:
 ## 🚀 Deployment
 
 The app is already configured in manifest.json:
+
 ```json
 {
   "display": "standalone",
@@ -194,6 +214,7 @@ No additional configuration needed! Just deploy and users can install.
 ## ✨ Result
 
 Hawk Fuel is now a **true mobile-first Progressive Web App** that:
+
 - ✅ Only works when installed (enforced)
 - ✅ Touch-optimized for all devices
 - ✅ Responsive from 320px to 4K

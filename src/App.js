@@ -47,10 +47,11 @@ function App() {
    */
   useEffect(() => {
     // Check if running in standalone mode
-    const standalone = window.matchMedia('(display-mode: standalone)').matches ||
-                      window.navigator.standalone ||
-                      document.referrer.includes('android-app://');
-    
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone ||
+      document.referrer.includes("android-app://");
+
     setIsStandalone(standalone);
   }, []);
 
@@ -135,8 +136,10 @@ function App() {
               <img src="/LogoWD.jpg" alt="Hawk Fuel Logo" />
             </div>
             <h1>Hawk Fuel</h1>
-            <p className="install-subtitle">Professional Calorie & Activity Tracker</p>
-            
+            <p className="install-subtitle">
+              Professional Calorie & Activity Tracker
+            </p>
+
             <div className="install-message">
               <h2>Install Required</h2>
               <p>This app must be installed to your device to work properly.</p>
@@ -145,17 +148,30 @@ function App() {
             <div className="install-instructions">
               <h3>iOS (iPhone/iPad):</h3>
               <ol>
-                <li>Tap the <strong>Share</strong> button (box with arrow)</li>
-                <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
-                <li>Tap <strong>"Add"</strong> in the top right</li>
+                <li>
+                  Tap the <strong>Share</strong> button (box with arrow)
+                </li>
+                <li>
+                  Scroll down and tap <strong>"Add to Home Screen"</strong>
+                </li>
+                <li>
+                  Tap <strong>"Add"</strong> in the top right
+                </li>
                 <li>Open the app from your home screen</li>
               </ol>
 
               <h3>Android (Chrome):</h3>
               <ol>
-                <li>Tap the <strong>three dots</strong> menu (⋮)</li>
-                <li>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></li>
-                <li>Tap <strong>"Add"</strong> or <strong>"Install"</strong></li>
+                <li>
+                  Tap the <strong>three dots</strong> menu (⋮)
+                </li>
+                <li>
+                  Tap <strong>"Add to Home screen"</strong> or{" "}
+                  <strong>"Install app"</strong>
+                </li>
+                <li>
+                  Tap <strong>"Add"</strong> or <strong>"Install"</strong>
+                </li>
                 <li>Open the app from your home screen</li>
               </ol>
             </div>
