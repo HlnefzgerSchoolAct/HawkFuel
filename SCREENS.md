@@ -1,4 +1,4 @@
-# CalTrack - Screen-by-Screen Breakdown
+# Hawk Fuel - Screen-by-Screen Breakdown
 
 ## Screen 1: Welcome / Splash Screen
 
@@ -9,7 +9,7 @@ First impression - introduce the app and get user started
 ```
 ┌─────────────────────────────┐
 │                             │
-│      🏋️ CalTrack           │
+│      🏋️ Hawk Fuel           │
 │                             │
 │   Your Fitness Companion    │
 │                             │
@@ -26,7 +26,7 @@ First impression - introduce the app and get user started
 
 ### Elements
 - App logo/icon
-- App name: "CalTrack"
+- App name: "Hawk Fuel"
 - Tagline
 - Brief description (1-2 sentences)
 - **"Get Started" button** (primary action)
@@ -222,7 +222,7 @@ Central hub - show daily progress and quick actions
 ### Layout
 ```
 ┌─────────────────────────────┐
-│  CalTrack        ☰ Settings │
+│  Hawk Fuel        ☰ Settings │
 ├─────────────────────────────┤
 │                             │
 │  Today: Monday, Jan 20      │

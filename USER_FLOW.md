@@ -1,4 +1,4 @@
-# CalTrack - User Flow
+# Hawk Fuel - User Flow
 
 ## First-Time User Experience
 

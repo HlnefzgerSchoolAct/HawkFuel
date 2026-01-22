@@ -1,8 +1,8 @@
-# ⚡ Quick Start Guide - CalTrack
+# ⚡ Quick Start Guide - Hawk Fuel
 
 ## 🎯 For Complete Beginners
 
-This is a **3-step guide** to get CalTrack running on your Windows computer.
+This is a **3-step guide** to get Hawk Fuel running on your Windows computer.
 
 ---
 
@@ -42,9 +42,9 @@ Before starting, make sure you have:
 
 ### In VS Code:
 
-1. **Open the CalTrack folder:**
+1. **Open the Hawk Fuel folder:**
    - File → Open Folder
-   - Select the CalTrack folder
+   - Select the Hawk Fuel folder
    - Click "Select Folder"
 
 2. **Open Terminal:**
@@ -78,7 +78,7 @@ Before starting, make sure you have:
 
 You should see:
 - 🔥 Purple gradient background
-- "CalTrack" header at the top
+- "Hawk Fuel" header at the top
 - A form asking for your age, gender, height, weight
 - 3-step progress bar
 
@@ -201,7 +201,7 @@ After getting it running:
 
 ## 🎉 You Did It!
 
-Your CalTrack app is now running!
+Your Hawk Fuel app is now running!
 
 **Type this in terminal:**
 ```bash

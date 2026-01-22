@@ -1,4 +1,4 @@
-# 🪟 Windows Setup Guide for CalTrack
+# 🪟 Windows Setup Guide for Hawk Fuel
 
 ## For Complete Beginners - Step by Step
 
@@ -47,10 +47,10 @@ Node.js includes `npm`, which we need to install React and run the project.
 1. Download from: https://code.visualstudio.com/
 2. Install it (click Next through everything)
 
-### Open CalTrack Project:
+### Open Hawk Fuel Project:
 1. Open VS Code
 2. Click **File** → **Open Folder**
-3. Navigate to your CalTrack folder
+3. Navigate to your Hawk Fuel folder
 4. Click **Select Folder**
 
 ---
@@ -113,12 +113,12 @@ Press **Enter**.
 ### What's Happening?
 - React development server is starting
 - Your default browser will open automatically
-- You'll see CalTrack running at http://localhost:3000
+- You'll see Hawk Fuel running at http://localhost:3000
 - **Don't close the terminal!** The server needs to keep running
 
 ### You Should See:
 - A beautiful purple gradient app
-- "CalTrack" header
+- "Hawk Fuel" header
 - A form asking for your information
 
 🎉 **Congratulations! Your app is running!**
@@ -129,7 +129,7 @@ Press **Enter**.
 
 ### Starting Your Work:
 1. Open VS Code
-2. Open the CalTrack folder
+2. Open the Hawk Fuel folder
 3. Open terminal (`Ctrl + backtick`)
 4. Type: `npm start`
 5. Browser opens automatically
@@ -169,7 +169,7 @@ Press **Enter**.
 
 ### Change the App Title:
 1. Open `public/index.html`
-2. Find: `<title>CalTrack - Calorie Tracker</title>`
+2. Find: `<title>Hawk Fuel - Calorie Tracker</title>`
 3. Change to whatever you want
 4. Save
 
@@ -217,7 +217,7 @@ Press **Enter**.
 
 **Fix:**
 1. Make sure you're in the right folder
-2. In terminal, type: `cd /d C:\path\to\CalTrack`
+2. In terminal, type: `cd /d C:\path\to\Hawk Fuel`
 3. Run `npm install` again
 
 ---

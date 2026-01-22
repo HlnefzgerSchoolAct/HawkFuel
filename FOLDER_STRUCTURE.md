@@ -1,7 +1,7 @@
-# 📂 CalTrack - Complete Folder Structure
+# 📂 Hawk Fuel - Complete Folder Structure
 
 ```
-CalTrack/
+Hawk Fuel/
 │
 ├── 📁 public/                          # Static files (not processed by React)
 │   │
@@ -234,7 +234,7 @@ Final webpage displayed
 Your folder will have additional files:
 
 ```
-CalTrack/
+Hawk Fuel/
 ├── node_modules/        ← NEW! (very large folder)
 ├── package-lock.json    ← NEW! (auto-generated)
 └── ... (all other files remain the same)
@@ -247,7 +247,7 @@ CalTrack/
 A new folder appears:
 
 ```
-CalTrack/
+Hawk Fuel/
 ├── build/              ← NEW! (production-ready files)
 │   ├── static/
 │   │   ├── css/
@@ -308,7 +308,7 @@ Install these for better development:
 Typical sizes after setup:
 
 ```
-CalTrack/
+Hawk Fuel/
 ├── node_modules/     ~300 MB (varies)
 ├── src/              ~50 KB
 ├── public/           ~10 KB (without images)
@@ -342,7 +342,7 @@ All other files are optional but recommended!
 ## 🎯 Next Steps
 
 1. Open VS Code
-2. Open CalTrack folder
+2. Open Hawk Fuel folder
 3. Open terminal (`Ctrl + backtick`)
 4. Run: `npm install`
 5. Run: `npm start`

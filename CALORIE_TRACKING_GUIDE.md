@@ -1,8 +1,8 @@
-# 📊 CalTrack - Daily Calorie Tracking Guide
+# 📊 Hawk Fuel - Daily Calorie Tracking Guide
 
 ## Overview
 
-CalTrack now includes **daily calorie tracking** with localStorage persistence! This means you can:
+Hawk Fuel now includes **daily calorie tracking** with localStorage persistence! This means you can:
 
 - ✅ Log food you eat
 - ✅ Log exercise calories burned
@@ -103,11 +103,11 @@ The app gives you helpful messages:
 - **Persistent**: Data stays even after closing browser
 - **Per-browser**: Each browser has its own storage
 - **No server needed**: All data stored locally on your computer
-- **Automatic**: CalTrack saves everything for you
+- **Automatic**: Hawk Fuel saves everything for you
 
 ### What Gets Saved?
 
-CalTrack saves 5 things to localStorage:
+Hawk Fuel saves 5 things to localStorage:
 
 1. **User Profile**
    - Your age, weight, height, gender
@@ -419,7 +419,7 @@ const total = foodLog.reduce((sum, entry) => sum + entry.calories, 0);
 
 ### Q: What happens if I clear browser data?
 
-**A:** All CalTrack data will be deleted. You'll start fresh from Step 1.
+**A:** All Hawk Fuel data will be deleted. You'll start fresh from Step 1.
 
 ### Q: How accurate are the calorie calculations?
 
@@ -437,7 +437,7 @@ const total = foodLog.reduce((sum, entry) => sum + entry.calories, 0);
 
 ## Future Enhancements (Ideas for Practice)
 
-Want to improve CalTrack? Try adding:
+Want to improve Hawk Fuel? Try adding:
 
 1. **Edit Entries**
    - Currently can only delete
@@ -530,7 +530,7 @@ Want to improve CalTrack? Try adding:
 
 ## Summary
 
-CalTrack now has a **complete daily calorie tracking system** with:
+Hawk Fuel now has a **complete daily calorie tracking system** with:
 
 ✅ Food logging with calorie input
 ✅ Exercise logging with calories burned

@@ -1,8 +1,8 @@
-# 🎉 CalTrack React Setup - Complete!
+# 🎉 Hawk Fuel React Setup - Complete!
 
 ## ✅ Project Successfully Configured
 
-Your CalTrack project is now a **full-featured React PWA** with all necessary files and structure.
+Your Hawk Fuel project is now a **full-featured React PWA** with all necessary files and structure.
 
 ---
 
@@ -224,7 +224,7 @@ npm run eject
 ## 📁 Final Folder Structure
 
 ```
-CalTrack/
+Hawk Fuel/
 ├── .vscode/                  ✅ Created
 │   ├── settings.json         ✅ Created
 │   └── extensions.json       ✅ Created
@@ -312,7 +312,7 @@ npm start
 1. **Official Tutorial:** https://react.dev/learn
 2. **YouTube:** "React Tutorial for Beginners"
 3. **Practice:** Modify existing components
-4. **Build:** Add new features to CalTrack
+4. **Build:** Add new features to Hawk Fuel
 
 ---
 

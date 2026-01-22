@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Activity Tracker CSS
-cat > /workspaces/CalTrack/src/components/ActivityTracker.css << 'EOF'
+cat > /workspaces/Hawk Fuel/src/components/ActivityTracker.css << 'EOF'
 /* Modern Gym Theme - Activity Tracker */
 
 .activity-tracker {
@@ -114,7 +114,7 @@ cat > /workspaces/CalTrack/src/components/ActivityTracker.css << 'EOF'
 EOF
 
 # Results CSS
-cat > /workspaces/CalTrack/src/components/Results.css << 'EOF'
+cat > /workspaces/Hawk Fuel/src/components/Results.css << 'EOF'
 /* Modern Gym Theme - Results */
 
 .results {

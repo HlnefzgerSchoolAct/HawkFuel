@@ -112,7 +112,7 @@ function App() {
   return (
     <div className="App">
       <header className="app-header">
-        <h1>🔥 CalTrack</h1>
+        <h1>🔥 Hawk Fuel</h1>
         <p>Your Personal Calorie & Activity Tracker</p>
       </header>
 

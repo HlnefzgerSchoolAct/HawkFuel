@@ -1,8 +1,8 @@
-# 📘 React Components Guide - CalTrack
+# 📘 React Components Guide - Hawk Fuel
 
 ## For Complete Beginners
 
-This guide explains the 3 main React components in CalTrack and how they work.
+This guide explains the 3 main React components in Hawk Fuel and how they work.
 
 ---
 
@@ -374,7 +374,7 @@ const handleClick = (e) => {
 
 ---
 
-## 🎯 Common Patterns in CalTrack
+## 🎯 Common Patterns in Hawk Fuel
 
 ### Pattern 1: Controlled Form Input
 ```javascript

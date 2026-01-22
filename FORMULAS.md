@@ -1,4 +1,4 @@
-# CalTrack - Calculation Formulas
+# Hawk Fuel - Calculation Formulas
 
 ## Unit Conversions
 

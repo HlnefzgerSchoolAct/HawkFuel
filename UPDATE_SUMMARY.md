@@ -1,8 +1,8 @@
-# ✅ CalTrack Update Summary - Calorie Tracking Feature
+# ✅ Hawk Fuel Update Summary - Calorie Tracking Feature
 
 ## What Was Added
 
-Your CalTrack app now has a **complete daily calorie tracking system** with localStorage persistence!
+Your Hawk Fuel app now has a **complete daily calorie tracking system** with localStorage persistence!
 
 ---
 
@@ -94,7 +94,7 @@ Step 4: Dashboard (NEW!) - Daily calorie tracking
 **Updates:**
 - Added new features section highlighting calorie tracking
 - Updated project structure showing new files
-- Added comprehensive "How to Use CalTrack" section
+- Added comprehensive "How to Use Hawk Fuel" section
 - Daily usage instructions
 - Link to CALORIE_TRACKING_GUIDE.md
 
@@ -367,7 +367,7 @@ location.reload()
 ### Add Sample Data
 ```javascript
 // In browser console:
-localStorage.setItem('caltrack_food_log', JSON.stringify([
+localStorage.setItem('hawkfuel_food_log', JSON.stringify([
   {id: 1, name: 'Breakfast', calories: 400},
   {id: 2, name: 'Lunch', calories: 600}
 ]))
@@ -388,7 +388,7 @@ You now have a **fully functional calorie tracking app** with:
 ✅ Comprehensive documentation
 ✅ Production-ready quality
 
-**Congratulations! Your CalTrack app is complete and ready to use!** 🎊
+**Congratulations! Your Hawk Fuel app is complete and ready to use!** 🎊
 
 ---
 

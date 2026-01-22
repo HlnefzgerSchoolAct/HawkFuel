@@ -1,4 +1,4 @@
-# CalTrack - Mobile-First UI Design
+# Hawk Fuel - Mobile-First UI Design
 
 ## Design Principles
 - **Mobile-first**: Optimized for 375px width (iPhone standard)
@@ -30,7 +30,7 @@ First impression and app introduction
 
 ### Visual Elements
 - **Logo placeholder**: `logo.jpg` (120px × 120px, centered)
-- App name "CalTrack" (32px, bold, black)
+- App name "Hawk Fuel" (32px, bold, black)
 - Tagline "Your Fitness Companion" (16px, dark gray)
 - Brief description: "Track calories, reach your strength & conditioning goals" (14px, gray)
 
@@ -784,7 +784,7 @@ Clear Today's Log [Button]
 **Dashboard Header:**
 ```
 ┌─────────────────────────┐
-│ [logo.jpg]  CalTrack  ☰ │
+│ [logo.jpg]  Hawk Fuel  ☰ │
 └─────────────────────────┘
 ```
 - Logo: 40px × 40px (left side)

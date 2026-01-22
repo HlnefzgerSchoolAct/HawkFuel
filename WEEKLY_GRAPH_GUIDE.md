@@ -2,7 +2,7 @@
 
 ## Overview
 
-CalTrack now includes a **7-day line graph** that visualizes your calorie trends over the past week!
+Hawk Fuel now includes a **7-day line graph** that visualizes your calorie trends over the past week!
 
 **What it shows:**
 - 🔴 **Red line** - Calories eaten each day
@@ -65,7 +65,7 @@ Net intake: 2100 - 450 = 1650 calories (under target ✅)
 
 ### Storage in localStorage
 
-**Key:** `caltrack_weekly_history`
+**Key:** `hawkfuel_weekly_history`
 
 **Format:** JSON object with dates as keys
 
@@ -242,7 +242,7 @@ The graph component converts the above into Chart.js format:
 
 3. **localStorage updates:**
    ```javascript
-   caltrack_food_log: [
+   hawkfuel_food_log: [
      { id: 1234567890, name: 'Oatmeal', calories: 300, timestamp: '...' }
    ]
    ```
@@ -268,7 +268,7 @@ The graph component converts the above into Chart.js format:
    const target = 2000
    
    history["2026-01-22"] = { eaten: 300, burned: 0, target: 2000 }
-   localStorage.setItem('caltrack_weekly_history', JSON.stringify(history))
+   localStorage.setItem('hawkfuel_weekly_history', JSON.stringify(history))
    ```
 
 7. **Graph refreshes:**
@@ -740,7 +740,7 @@ npm install chart.js react-chartjs-2
 **Check:**
 1. Is saveDailyDataToHistory() being called?
 2. Check localStorage: DevTools → Application → Local Storage
-3. Look for 'caltrack_weekly_history' key
+3. Look for 'hawkfuel_weekly_history' key
 
 **Debug:**
 ```javascript
@@ -790,7 +790,7 @@ tension: 0.5 // More curved
 
 **Per entry:** ~100 bytes
 **7 days:** ~700 bytes
-**Total CalTrack data:** ~5-10KB
+**Total Hawk Fuel data:** ~5-10KB
 
 **Well within limits** (localStorage max: 5-10MB per domain)
 

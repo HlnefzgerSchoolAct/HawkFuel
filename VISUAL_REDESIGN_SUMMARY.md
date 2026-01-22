@@ -1,7 +1,7 @@
 # Visual Redesign Summary - Modern Gym Theme
 
 ## Overview
-CalTrack has been completely redesigned with a modern, professional gym aesthetic using a black, white, and orange color scheme.
+Hawk Fuel has been completely redesigned with a modern, professional gym aesthetic using a black, white, and orange color scheme.
 
 ## Color Palette
 
