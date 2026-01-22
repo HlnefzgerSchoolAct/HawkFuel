@@ -174,6 +174,39 @@ function App() {
                 </li>
                 <li>Open the app from your home screen</li>
               </ol>
+
+              <h3>Windows (Chrome):</h3>
+              <ol>
+                <li>
+                  Click the <strong>Install</strong> icon in the address bar
+                  (looks like a computer with a down arrow)
+                </li>
+                <li>
+                  If you don't see the icon, click the{" "}
+                  <strong>three dots menu</strong> (top right)
+                </li>
+                <li>
+                  Select <strong>"Install Hawk Fuel"</strong> or{" "}
+                  <strong>"Install app"</strong>
+                </li>
+                <li>App will open in its own window for easy access</li>
+              </ol>
+
+              <h3>Windows (Edge):</h3>
+              <ol>
+                <li>
+                  Click the <strong>App available</strong> icon in the address
+                  bar
+                </li>
+                <li>
+                  Or click the <strong>three dots menu</strong> (top right)
+                </li>
+                <li>
+                  Select <strong>"Apps"</strong> &gt;{" "}
+                  <strong>"Install this site as an app"</strong>
+                </li>
+                <li>App will open in its own window for easy access</li>
+              </ol>
             </div>
 
             <div className="install-benefits">
