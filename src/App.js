@@ -7,6 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 import "./App.css";
 
 // Design System
@@ -441,6 +442,7 @@ function App() {
           />
         </div>
       </ErrorBoundary>
+      <Analytics />
     </BrowserRouter>
   );
 }
