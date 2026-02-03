@@ -5,6 +5,7 @@
 
 .profile-page {
   padding: var(--space-4);
+  padding-top: var(--space-6);
   padding-bottom: calc(var(--bottom-nav-height) + var(--space-8));
   max-width: 600px;
   margin: 0 auto;

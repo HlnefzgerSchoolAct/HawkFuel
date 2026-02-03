@@ -126,6 +126,7 @@ body {
   background: var(--bg-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  padding-top: max(var(--safe-area-top), 12px);
 }
 
 /* ===== Typography ===== */
