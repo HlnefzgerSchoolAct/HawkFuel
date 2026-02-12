@@ -303,9 +303,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Server configuration error", code: "SERVER_CONFIG_ERROR" });
     }
 
+    // USDA key is optional - we gracefully degrade to AI-only if missing
     if (!usdaKey) {
-      console.error("[ERROR] Missing USDA_API_KEY");
-      return res.status(500).json({ error: "Server configuration error", code: "SERVER_CONFIG_ERROR" });
+      console.warn("[WARN] Missing USDA_API_KEY - will use AI estimation for nutrition data");
     }
 
     const refererUrl = process.env.VERCEL_URL
@@ -401,24 +401,27 @@ export default async function handler(req, res) {
       foodsToProcess.map(async (food) => {
         const servingGrams = parseServingToGrams(food.estimatedServing || "1 serving");
 
-        try {
-          const usdaResult = await searchUSDA(food.name, usdaKey);
+        // Try USDA first (if key is available)
+        if (usdaKey) {
+          try {
+            const usdaResult = await searchUSDA(food.name, usdaKey);
 
-          if (usdaResult && usdaResult.foodNutrients) {
-            const nutrition = parseUsdaNutrients(usdaResult.foodNutrients, servingGrams);
+            if (usdaResult && usdaResult.foodNutrients) {
+              const nutrition = parseUsdaNutrients(usdaResult.foodNutrients, servingGrams);
 
-            if (nutrition.calories > 0) {
-              return {
-                name: food.name,
-                serving: food.estimatedServing,
-                nutrition: nutrition,
-                source: "usda",
-                usdaFoodName: usdaResult.description,
-              };
+              if (nutrition.calories > 0) {
+                return {
+                  name: food.name,
+                  serving: food.estimatedServing,
+                  nutrition: nutrition,
+                  source: "usda",
+                  usdaFoodName: usdaResult.description,
+                };
+              }
             }
+          } catch (err) {
+            console.error("[USDA] Error looking up \"" + food.name + "\":", err.message);
           }
-        } catch (err) {
-          console.error("[USDA] Error looking up \"" + food.name + "\":", err.message);
         }
 
         // Fall back to AI text estimation

@@ -81,7 +81,7 @@ function formatErrorMessage(errorData, status) {
     MISSING_INPUT: "No image provided.",
     VISION_ERROR: "Could not analyze the photo. Please try again.",
     TIMEOUT: "Request timed out. Please try again with a clearer photo.",
-    SERVER_CONFIG_ERROR: "Service temporarily unavailable.",
+    SERVER_CONFIG_ERROR: "Service not configured. Please contact support.",
     AUTH_ERROR: "Authentication error. Please try again later.",
   };
 

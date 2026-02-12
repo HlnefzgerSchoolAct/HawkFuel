@@ -206,7 +206,7 @@ export async function estimateNutrition(foodDescription) {
       }
 
       // Validate response
-      const { nutrition, responseTime } = data;
+      const { nutrition, responseTime, source, usdaFoodName } = data;
 
       if (!nutrition) {
         throw new Error("🤷 No nutrition data received. Please try again.");
@@ -223,7 +223,12 @@ export async function estimateNutrition(foodDescription) {
         );
       }
 
-      devLog.log(`✅ Nutrition estimated in ${responseTime}ms:`, nutrition);
+      const sourceLabel = source === "usda" ? "USDA" : source === "usda_ai_assisted" ? "USDA (AI-assisted)" : "AI estimate";
+      devLog.log(`✅ Nutrition from ${sourceLabel} in ${responseTime}ms:`, nutrition);
+
+      // Attach source info to the nutrition data
+      nutrition._source = source;
+      nutrition._usdaFoodName = usdaFoodName;
 
       // Cache the result
       cacheNutrition(trimmedDescription, nutrition);

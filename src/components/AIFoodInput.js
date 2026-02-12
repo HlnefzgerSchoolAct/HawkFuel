@@ -123,7 +123,9 @@ function AIFoodInput({
       zinc: estimatedNutrition.zinc,
       potassium: estimatedNutrition.potassium,
       timestamp: new Date().toISOString(),
-      aiEstimated: true,
+      aiEstimated: estimatedNutrition._source === "ai_estimate",
+      nutritionSource: estimatedNutrition._source || "ai_estimate",
+      usdaFoodName: estimatedNutrition._usdaFoodName,
     };
 
     onAddFood(foodEntry);
@@ -235,9 +237,17 @@ function AIFoodInput({
 
       {estimatedNutrition && (
         <div className="ai-result-container">
-          <h4 className="ai-result-title">
-            Estimated for: {quantity} {unit} {foodDescription}
-          </h4>
+          <div className="ai-result-header">
+            <h4 className="ai-result-title">
+              Estimated for: {quantity} {unit} {foodDescription}
+            </h4>
+            <span className={"ai-source-badge " + (estimatedNutrition._source?.startsWith("usda") ? "badge-usda" : "badge-ai")}>
+              {estimatedNutrition._source === "usda" ? "USDA" : estimatedNutrition._source === "usda_ai_assisted" ? "USDA (AI-assisted)" : "AI Est."}
+            </span>
+          </div>
+          {estimatedNutrition._usdaFoodName && (
+            <p className="ai-usda-match">Matched: {estimatedNutrition._usdaFoodName}</p>
+          )}
           <div className="ai-nutrition-grid">
             <div className="ai-nutrition-item">
               <div className="ai-nutrition-value">

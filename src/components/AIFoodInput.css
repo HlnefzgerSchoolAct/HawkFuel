@@ -204,11 +204,45 @@
   border: 1px solid var(--border-subtle);
 }
 
+.ai-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
 .ai-result-title {
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   color: var(--text-secondary);
-  margin: 0 0 var(--space-md) 0;
+  margin: 0;
+}
+
+.ai-source-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ai-source-badge.badge-usda {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.ai-source-badge.badge-ai {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.ai-usda-match {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-sm) 0;
+  font-style: italic;
 }
 
 .ai-nutrition-grid {
