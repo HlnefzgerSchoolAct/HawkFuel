@@ -219,13 +219,7 @@
   margin: 0;
 }
 
-<<<<<<< HEAD
-.ai-source-badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-=======
+/* ...existing code... */
 .ai-result-header {
   display: flex;
   align-items: center;
@@ -241,28 +235,14 @@
   border-radius: 99px;
   font-size: var(--text-xs);
   font-weight: var(--font-medium);
->>>>>>> f5a1245 (Change primary color from #f97316 to #3b82f6 in src/)
+  white-space: nowrap;
+  flex-shrink: 0;
+}
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-<<<<<<< HEAD
-.ai-source-badge.badge-usda {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.ai-source-badge.badge-ai {
-  background: #e3f2fd;
-  color: #1565c0;
-}
-
-.ai-usda-match {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-  margin: 0 0 var(--space-sm) 0;
-  font-style: italic;
-=======
+/* ...existing code... */
 .ai-source-badge--usda {
   background: #d1fae5;
   color: #065f46;
@@ -303,7 +283,7 @@
 
 .ai-usda-link:hover {
   color: var(--text-link-hover, #0369a1);
->>>>>>> f5a1245 (Change primary color from #f97316 to #3b82f6 in src/)
+}
 }
 
 .ai-nutrition-grid {
