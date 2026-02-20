@@ -5,7 +5,9 @@ import { CompactMicronutrients } from "./common";
 import FoodPhotoCapture from "./FoodPhotoCapture";
 import devLog from "../utils/devLog";
 import "./AIFoodInput.css";
-
+/**
+ *OOOooooo Food
+ */
 function AIFoodInput({
   onAddFood,
   userWeight,
