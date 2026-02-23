@@ -456,6 +456,24 @@ function App() {
 
   // Show install prompt on mobile (not standalone)
   if (!isStandalone && isMobile) {
+    // #region agent log
+    fetch('http://127.0.0.1:7478/ingest/a61803e4-33fd-4e07-8277-6c1c53f64fc5', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Debug-Session-Id': '893c3b',
+      },
+      body: JSON.stringify({
+        sessionId: '893c3b',
+        runId: 'pre-fix-1',
+        hypothesisId: 'H1',
+        location: 'App.js:installPrompt',
+        message: 'Showing install prompt',
+        data: { isStandalone, isMobile },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion agent log
     return (
       <div className="App">
         <div className="install-prompt">
@@ -524,7 +542,26 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <>
+      {/* #region agent log */}
+      {fetch('http://127.0.0.1:7478/ingest/a61803e4-33fd-4e07-8277-6c1c53f64fc5', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Debug-Session-Id': '893c3b',
+        },
+        body: JSON.stringify({
+          sessionId: '893c3b',
+          runId: 'pre-fix-1',
+          hypothesisId: 'H1',
+          location: 'App.js:main',
+          message: 'Rendering main app shell',
+          data: { isStandalone, isMobile, isOffline },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {}) && null}
+      {/* #endregion agent log */}
+      <BrowserRouter>
       <KeyboardShortcutsProvider>
         <A11yProvider>
         <SnackbarProvider>
@@ -574,6 +611,7 @@ function App() {
       </KeyboardShortcutsProvider>
       <Analytics />
     </BrowserRouter>
+    </>
   );
 }
 

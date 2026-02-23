@@ -122,6 +122,30 @@ function LogPage({ userProfile, dailyTarget }) {
     window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 768;
   const preferences = loadPreferences();
 
+  // #region agent log
+  fetch('http://127.0.0.1:7478/ingest/a61803e4-33fd-4e07-8277-6c1c53f64fc5', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Debug-Session-Id': '893c3b',
+    },
+    body: JSON.stringify({
+      sessionId: '893c3b',
+      runId: 'pre-fix-1',
+      hypothesisId: 'H2',
+      location: 'LogPage.js:init',
+      message: 'LogPage initial state',
+      data: {
+        isMobile,
+        databaseEnabled: preferences.databaseEnabled,
+        activeTab,
+        inputMode,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion agent log
+
   // ===== Data Loading =====
   const loadData = useCallback(() => {
     setFoodLog(loadFoodLog());

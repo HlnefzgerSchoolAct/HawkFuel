@@ -47,6 +47,25 @@ function AIFoodInput({
       return;
     }
 
+    // #region agent log
+    fetch('http://127.0.0.1:7478/ingest/a61803e4-33fd-4e07-8277-6c1c53f64fc5', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Debug-Session-Id': '893c3b',
+      },
+      body: JSON.stringify({
+        sessionId: '893c3b',
+        runId: 'pre-fix-1',
+        hypothesisId: 'H3',
+        location: 'AIFoodInput.js:handleEstimate',
+        message: 'handleEstimate called',
+        data: { foodDescription, quantity, unit },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion agent log
+
     setLoading(true);
     setLoadingStage("Preparing...");
 
@@ -139,6 +158,28 @@ function AIFoodInput({
         dataType: estimatedNutrition.dataType,
       }),
     };
+    // #region agent log
+    fetch('http://127.0.0.1:7478/ingest/a61803e4-33fd-4e07-8277-6c1c53f64fc5', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Debug-Session-Id': '893c3b',
+      },
+      body: JSON.stringify({
+        sessionId: '893c3b',
+        runId: 'pre-fix-1',
+        hypothesisId: 'H3',
+        location: 'AIFoodInput.js:handleAddFood',
+        message: 'handleAddFood called',
+        data: {
+          hasEstimated: !!estimatedNutrition,
+          foodName: foodEntry.name,
+          calories: foodEntry.calories,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion agent log
     onAddFood(foodEntry);
     setFoodDescription("");
     setQuantity("1");
