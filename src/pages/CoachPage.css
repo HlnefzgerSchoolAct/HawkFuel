@@ -1,0 +1,234 @@
+/**
+ * Coach Page — AI Nutrition Coach
+ * Chat UI styling using design tokens
+ */
+
+.coach-page {
+  padding: var(--space-md) var(--space-md) calc(var(--space-3xl) + env(safe-area-inset-bottom));
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.coach-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.coach-header__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-100);
+  color: var(--color-primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.coach-header__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.coach-header__subtitle {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.coach-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.coach-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+}
+
+.coach-card .m3-card__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md);
+  gap: var(--space-md);
+}
+
+.coach-messages-wrap {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+  max-height: 50vh;
+  padding-bottom: var(--space-md);
+}
+
+.coach-welcome {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--text-secondary);
+}
+
+.coach-welcome__icon {
+  color: var(--color-primary-500);
+  margin-bottom: var(--space-md);
+  opacity: 0.9;
+}
+
+.coach-welcome__text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 var(--space-md) 0;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.coach-welcome__hint {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.coach-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.coach-suggestion {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background var(--duration-short), border-color var(--duration-short);
+}
+
+.coach-suggestion:hover {
+  background: var(--surface-interactive-hover);
+  border-color: var(--color-primary-200);
+  color: var(--color-primary-600);
+}
+
+.coach-messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.coach-message {
+  max-width: 90%;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.coach-message--user {
+  align-self: flex-end;
+  background: var(--color-primary-100);
+  color: var(--color-primary-900);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.coach-message--assistant {
+  align-self: flex-start;
+  background: var(--surface-tertiary);
+  color: var(--text-primary);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.coach-message__content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.coach-message--loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-tertiary);
+}
+
+.coach-message__loader {
+  flex-shrink: 0;
+  animation: coach-spin 0.8s linear infinite;
+}
+
+@keyframes coach-spin {
+  to { transform: rotate(360deg); }
+}
+
+.coach-error {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+}
+
+.coach-input-wrap {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-end;
+}
+
+.coach-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.coach-send-btn {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.coach-send-spinner {
+  animation: coach-spin 0.8s linear infinite;
+}
+
+/* Dark mode */
+[data-theme="dark"] .coach-header__icon,
+:root:not([data-theme="light"]) .coach-header__icon {
+  background: color-mix(in srgb, var(--color-primary-500) 20%, transparent);
+  color: var(--color-primary-300);
+}
+
+[data-theme="dark"] .coach-message--user,
+:root:not([data-theme="light"]) .coach-message--user {
+  background: color-mix(in srgb, var(--color-primary-500) 25%, transparent);
+  color: var(--color-primary-100);
+}
+
+[data-theme="dark"] .coach-message--assistant,
+:root:not([data-theme="light"]) .coach-message--assistant {
+  background: var(--surface-container);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .coach-suggestion:hover,
+:root:not([data-theme="light"]) .coach-suggestion:hover {
+  background: var(--surface-interactive);
+  border-color: var(--color-primary-600);
+  color: var(--color-primary-300);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .coach-message__loader,
+  .coach-send-spinner {
+    animation: none;
+  }
+}
