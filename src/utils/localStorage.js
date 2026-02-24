@@ -11,12 +11,14 @@ const STORAGE_KEYS = {
   WATER_LOG: "nutrinoteplus_water_log",
   PREFERENCES: "nutrinoteplus_preferences",
   ONBOARDING: "nutrinoteplus_onboarding",
+  INSTALL_PROMPT_DISMISSED: "nutrinoteplus_install_prompt_dismissed",
   RECENT_FOODS: "nutrinoteplus_recent_foods",
   FAVORITE_FOODS: "nutrinoteplus_favorite_foods",
   WEIGHT_LOG: "nutrinoteplus_weight_log",
   STREAK_DATA: "nutrinoteplus_streak_data",
   MACRO_GOALS: "nutrinoteplus_macro_goals",
   MICRONUTRIENT_GOALS: "nutrinoteplus_micronutrient_goals",
+  LAST_SYNC_TIME: "nutrinoteplus_last_sync_time",
 };
 
 // ============================================
@@ -340,6 +342,15 @@ const clearLocalStorage = (key) => {
   }
 };
 
+// Sync bridge: when set, notifies cloud sync after saves (no circular dep with syncService)
+let syncBridge = null;
+export const setSyncBridge = (fn) => {
+  syncBridge = fn;
+};
+const notifySync = (type, payload) => {
+  if (syncBridge) syncBridge(type, payload);
+};
+
 const getTodaysDate = () => {
   const today = new Date();
   return today.toISOString().split("T")[0];
@@ -379,6 +390,14 @@ const checkAndResetDaily = () => {
 
 export const saveUserProfile = (profile) => {
   saveToLocalStorage(STORAGE_KEYS.USER_PROFILE, profile);
+  notifySync("profile", {
+    userProfile: profile,
+    dailyTarget: loadFromLocalStorage(STORAGE_KEYS.DAILY_TARGET, 2000),
+    macroGoals: loadFromLocalStorage(STORAGE_KEYS.MACRO_GOALS, null),
+    micronutrientGoals: loadFromLocalStorage(STORAGE_KEYS.MICRONUTRIENT_GOALS, null),
+    preferences: loadFromLocalStorage(STORAGE_KEYS.PREFERENCES, {}),
+    onboarding: loadFromLocalStorage(STORAGE_KEYS.ONBOARDING, false),
+  });
 };
 
 export const loadUserProfile = () => {
@@ -387,6 +406,14 @@ export const loadUserProfile = () => {
 
 export const saveDailyTarget = (target) => {
   saveToLocalStorage(STORAGE_KEYS.DAILY_TARGET, target);
+  notifySync("profile", {
+    userProfile: loadFromLocalStorage(STORAGE_KEYS.USER_PROFILE, null),
+    dailyTarget: target,
+    macroGoals: loadFromLocalStorage(STORAGE_KEYS.MACRO_GOALS, null),
+    micronutrientGoals: loadFromLocalStorage(STORAGE_KEYS.MICRONUTRIENT_GOALS, null),
+    preferences: loadFromLocalStorage(STORAGE_KEYS.PREFERENCES, {}),
+    onboarding: loadFromLocalStorage(STORAGE_KEYS.ONBOARDING, false),
+  });
 };
 
 export const loadDailyTarget = () => {
@@ -395,6 +422,11 @@ export const loadDailyTarget = () => {
 
 export const saveFoodLog = (foodLog) => {
   saveToLocalStorage(STORAGE_KEYS.FOOD_LOG, foodLog);
+  notifySync("foodLog", {
+    entries: foodLog,
+    exercise: loadFromLocalStorage(STORAGE_KEYS.EXERCISE_LOG, []),
+    water: loadFromLocalStorage(STORAGE_KEYS.WATER_LOG, 0),
+  });
 };
 
 export const loadFoodLog = () => {
@@ -422,6 +454,11 @@ export const deleteFoodEntry = (entryId) => {
 
 export const saveExerciseLog = (exerciseLog) => {
   saveToLocalStorage(STORAGE_KEYS.EXERCISE_LOG, exerciseLog);
+  notifySync("foodLog", {
+    entries: loadFromLocalStorage(STORAGE_KEYS.FOOD_LOG, []),
+    exercise: exerciseLog,
+    water: loadFromLocalStorage(STORAGE_KEYS.WATER_LOG, 0),
+  });
 };
 
 export const loadExerciseLog = () => {
@@ -469,6 +506,7 @@ export const getRemainingCalories = () => {
 
 export const saveWeeklyHistory = (history) => {
   saveToLocalStorage(STORAGE_KEYS.WEEKLY_HISTORY, history);
+  notifySync("history", history);
 };
 
 export const loadWeeklyHistory = () => {
@@ -574,6 +612,11 @@ export const loadWaterLog = () => {
 
 export const saveWaterLog = (ounces) => {
   saveToLocalStorage(STORAGE_KEYS.WATER_LOG, ounces);
+  notifySync("foodLog", {
+    entries: loadFromLocalStorage(STORAGE_KEYS.FOOD_LOG, []),
+    exercise: loadFromLocalStorage(STORAGE_KEYS.EXERCISE_LOG, []),
+    water: ounces,
+  });
 };
 
 export const addWaterCup = () => {
@@ -681,6 +724,10 @@ const DEFAULT_PREFERENCES = {
   theme: "system", // 'system', 'light', 'dark'
   macroInputMode: "both", // 'manual', 'auto', 'both'
   tutorialComplete: false,
+  notificationsEnabled: false,
+  reminderBreakfast: "08:00",
+  reminderLunch: "12:30",
+  reminderDinner: "18:30",
 };
 
 export const loadPreferences = () => {
@@ -688,9 +735,15 @@ export const loadPreferences = () => {
 };
 
 export const savePreferences = (preferences) => {
-  saveToLocalStorage(STORAGE_KEYS.PREFERENCES, {
-    ...DEFAULT_PREFERENCES,
-    ...preferences,
+  const merged = { ...DEFAULT_PREFERENCES, ...preferences };
+  saveToLocalStorage(STORAGE_KEYS.PREFERENCES, merged);
+  notifySync("profile", {
+    userProfile: loadFromLocalStorage(STORAGE_KEYS.USER_PROFILE, null),
+    dailyTarget: loadFromLocalStorage(STORAGE_KEYS.DAILY_TARGET, 2000),
+    macroGoals: loadFromLocalStorage(STORAGE_KEYS.MACRO_GOALS, null),
+    micronutrientGoals: loadFromLocalStorage(STORAGE_KEYS.MICRONUTRIENT_GOALS, null),
+    preferences: merged,
+    onboarding: loadFromLocalStorage(STORAGE_KEYS.ONBOARDING, false),
   });
 };
 
@@ -711,10 +764,58 @@ export const hasCompletedOnboarding = () => {
 
 export const markOnboardingComplete = () => {
   saveToLocalStorage(STORAGE_KEYS.ONBOARDING, true);
+  notifySync("profile", {
+    userProfile: loadFromLocalStorage(STORAGE_KEYS.USER_PROFILE, null),
+    dailyTarget: loadFromLocalStorage(STORAGE_KEYS.DAILY_TARGET, 2000),
+    macroGoals: loadFromLocalStorage(STORAGE_KEYS.MACRO_GOALS, null),
+    micronutrientGoals: loadFromLocalStorage(STORAGE_KEYS.MICRONUTRIENT_GOALS, null),
+    preferences: loadFromLocalStorage(STORAGE_KEYS.PREFERENCES, {}),
+    onboarding: true,
+  });
 };
 
 export const resetOnboarding = () => {
   saveToLocalStorage(STORAGE_KEYS.ONBOARDING, false);
+};
+
+// ============================================
+// INSTALL PROMPT (PWA)
+// ============================================
+
+export const getInstallPromptDismissed = () => {
+  return loadFromLocalStorage(STORAGE_KEYS.INSTALL_PROMPT_DISMISSED, false);
+};
+
+export const setInstallPromptDismissed = () => {
+  saveToLocalStorage(STORAGE_KEYS.INSTALL_PROMPT_DISMISSED, true);
+};
+
+export const loadLastSyncTime = () => {
+  const val = loadFromLocalStorage(STORAGE_KEYS.LAST_SYNC_TIME);
+  return val ? new Date(val) : null;
+};
+
+export const saveLastSyncTime = (date) => {
+  const ts = date instanceof Date ? date.toISOString() : date;
+  saveToLocalStorage(STORAGE_KEYS.LAST_SYNC_TIME, ts);
+};
+
+// ============================================
+// ONBOARDING PROGRESS (draft persistence)
+// ============================================
+
+const ONBOARDING_DRAFT_KEY = "nutrinoteplus_onboarding_draft";
+
+export const loadOnboardingDraft = () => {
+  return loadFromLocalStorage(ONBOARDING_DRAFT_KEY, null);
+};
+
+export const saveOnboardingDraft = (draft) => {
+  saveToLocalStorage(ONBOARDING_DRAFT_KEY, draft);
+};
+
+export const clearOnboardingDraft = () => {
+  clearLocalStorage(ONBOARDING_DRAFT_KEY);
 };
 
 // ============================================
@@ -742,6 +843,14 @@ export const loadMacroGoals = () => {
 
 export const saveMacroGoals = (goals) => {
   saveToLocalStorage(STORAGE_KEYS.MACRO_GOALS, goals);
+  notifySync("profile", {
+    userProfile: loadFromLocalStorage(STORAGE_KEYS.USER_PROFILE, null),
+    dailyTarget: loadFromLocalStorage(STORAGE_KEYS.DAILY_TARGET, 2000),
+    macroGoals: goals,
+    micronutrientGoals: loadFromLocalStorage(STORAGE_KEYS.MICRONUTRIENT_GOALS, null),
+    preferences: loadFromLocalStorage(STORAGE_KEYS.PREFERENCES, {}),
+    onboarding: loadFromLocalStorage(STORAGE_KEYS.ONBOARDING, false),
+  });
 };
 
 export const calculateMacroGrams = (calories, percentages) => {
@@ -819,6 +928,14 @@ export const loadMicronutrientGoals = () => {
 
 export const saveMicronutrientGoals = (goals) => {
   saveToLocalStorage(STORAGE_KEYS.MICRONUTRIENT_GOALS, goals);
+  notifySync("profile", {
+    userProfile: loadFromLocalStorage(STORAGE_KEYS.USER_PROFILE, null),
+    dailyTarget: loadFromLocalStorage(STORAGE_KEYS.DAILY_TARGET, 2000),
+    macroGoals: loadFromLocalStorage(STORAGE_KEYS.MACRO_GOALS, null),
+    micronutrientGoals: goals,
+    preferences: loadFromLocalStorage(STORAGE_KEYS.PREFERENCES, {}),
+    onboarding: loadFromLocalStorage(STORAGE_KEYS.ONBOARDING, false),
+  });
 };
 
 /**
@@ -934,11 +1051,13 @@ export const addRecentFood = (food) => {
   // Keep only max items
   const trimmed = filtered.slice(0, MAX_RECENT_FOODS);
   saveToLocalStorage(STORAGE_KEYS.RECENT_FOODS, trimmed);
+  notifySync("recentFoods", trimmed);
   return trimmed;
 };
 
 export const clearRecentFoods = () => {
   saveToLocalStorage(STORAGE_KEYS.RECENT_FOODS, []);
+  notifySync("recentFoods", []);
 };
 
 // ============================================
@@ -989,6 +1108,7 @@ export const addFavoriteFood = (food) => {
   });
 
   saveToLocalStorage(STORAGE_KEYS.FAVORITE_FOODS, favorites);
+  notifySync("favorites", favorites);
   return favorites;
 };
 
@@ -996,6 +1116,7 @@ export const removeFavoriteFood = (foodId) => {
   const favorites = loadFavoriteFoods();
   const updated = favorites.filter((f) => f.id !== foodId);
   saveToLocalStorage(STORAGE_KEYS.FAVORITE_FOODS, updated);
+  notifySync("favorites", updated);
   return updated;
 };
 
@@ -1044,6 +1165,7 @@ export const addWeightEntry = (weight, unit = "lbs") => {
   const trimmed = filtered.slice(-90);
 
   saveToLocalStorage(STORAGE_KEYS.WEIGHT_LOG, trimmed);
+  notifySync("weightLog", trimmed);
   return trimmed;
 };
 
@@ -1099,6 +1221,7 @@ export const updateStreak = () => {
   data.lastLogDate = today;
 
   saveToLocalStorage(STORAGE_KEYS.STREAK_DATA, data);
+  notifySync("streakData", data);
   return data;
 };
 
@@ -1376,16 +1499,16 @@ export const saveFoodLogToHistory = () => {
 
   // Keep only last 7 days of detailed food history (to conserve localStorage space)
   const dates = Object.keys(history).sort();
+  let toSave = history;
   if (dates.length > 7) {
     const datesToKeep = dates.slice(-7);
-    const newHistory = {};
+    toSave = {};
     datesToKeep.forEach((date) => {
-      newHistory[date] = history[date];
+      toSave[date] = history[date];
     });
-    saveToLocalStorage(STORAGE_KEYS.FOOD_HISTORY, newHistory);
-  } else {
-    saveToLocalStorage(STORAGE_KEYS.FOOD_HISTORY, history);
   }
+  saveToLocalStorage(STORAGE_KEYS.FOOD_HISTORY, toSave);
+  notifySync("foodHistory", toSave);
 };
 
 // Get yesterday's food log

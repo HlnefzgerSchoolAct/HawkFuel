@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft,
@@ -14,6 +14,11 @@ import {
   Activity,
   Utensils,
 } from 'lucide-react';
+import {
+  loadOnboardingDraft,
+  saveOnboardingDraft,
+  clearOnboardingDraft,
+} from '../utils/localStorage';
 import './Onboarding.css';
 
 /**
@@ -87,12 +92,31 @@ const ACTIVITY_LEVELS = [
   }
 ];
 
-// Calculate BMR using Mifflin-St Jeor
-const calculateBMR = (weight, height, age, sex) => {
-  if (sex === 'female') {
-    return 10 * weight + 6.25 * height - 5 * age - 161;
+// Convert form values to metric for BMR (Mifflin-St Jeor uses kg, cm)
+const toMetricForBMR = (formData) => {
+  const age = parseInt(formData.age, 10) || 30;
+  const sex = formData.sex || 'male';
+  let weightKg, heightCm;
+
+  if (formData.units === 'imperial') {
+    const feet = parseInt(formData.heightFeet, 10) || 5;
+    const inches = parseInt(formData.heightInches, 10) || 10;
+    heightCm = (feet * 12 + inches) * 2.54;
+    weightKg = (parseFloat(formData.weight) || 160) * 0.453592;
+  } else {
+    heightCm = parseFloat(formData.height) || 170;
+    weightKg = parseFloat(formData.weight) || 70;
   }
-  return 10 * weight + 6.25 * height - 5 * age + 5;
+
+  return { weightKg, heightCm, age, sex };
+};
+
+// Calculate BMR using Mifflin-St Jeor (inputs in kg, cm)
+const calculateBMR = (weightKg, heightCm, age, sex) => {
+  if (sex === 'female') {
+    return 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+  }
+  return 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
 };
 
 // Calculate daily calories based on goal
@@ -146,26 +170,45 @@ const Onboarding = ({
   onSkip,
   initialStep = 0
 }) => {
-  const [currentStep, setCurrentStep] = useState(initialStep);
-  const [exitingStep, setExitingStep] = useState(null);
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     goal: null,
     sex: null,
     age: '',
     height: '',
+    heightFeet: '',
+    heightInches: '',
     weight: '',
     targetWeight: '',
     activityLevel: null,
-    name: ''
-  });
+    name: '',
+    units: 'metric'
+  };
+
+  const draft = loadOnboardingDraft();
+  const [currentStep, setCurrentStep] = useState(
+    draft?.currentStep ?? initialStep
+  );
+  const [exitingStep, setExitingStep] = useState(null);
+  const [formData, setFormData] = useState(
+    draft?.formData ? { ...defaultFormData, ...draft.formData } : defaultFormData
+  );
 
   const steps = useMemo(() => ['welcome', 'goal', 'info', 'activity', 'summary'], []);
+
+  useEffect(() => {
+    saveOnboardingDraft({ currentStep, formData });
+  }, [currentStep, formData]);
   const totalSteps = steps.length;
   const progress = ((currentStep + 1) / totalSteps) * 100;
 
   const updateFormData = useCallback((field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   }, []);
+
+  const handleSkip = useCallback(() => {
+    clearOnboardingDraft();
+    onSkip?.();
+  }, [onSkip]);
 
   const goNext = useCallback(() => {
     if (currentStep < totalSteps - 1) {
@@ -188,16 +231,13 @@ const Onboarding = ({
   }, [currentStep]);
 
   const handleComplete = useCallback(() => {
-    const bmr = calculateBMR(
-      parseFloat(formData.weight) || 70,
-      parseFloat(formData.height) || 170,
-      parseInt(formData.age) || 30,
-      formData.sex || 'male'
-    );
-    
+    clearOnboardingDraft();
+    const { weightKg, heightCm, age, sex } = toMetricForBMR(formData);
+    const bmr = calculateBMR(weightKg, heightCm, age, sex);
+
     const calories = calculateCalories(bmr, formData.activityLevel, formData.goal);
     const macros = calculateMacros(calories, formData.goal);
-    
+
     onComplete?.({
       ...formData,
       calorieGoal: calories,
@@ -207,16 +247,12 @@ const Onboarding = ({
 
   // Calculate estimated values for summary
   const calculatedValues = useMemo(() => {
-    const bmr = calculateBMR(
-      parseFloat(formData.weight) || 70,
-      parseFloat(formData.height) || 170,
-      parseInt(formData.age) || 30,
-      formData.sex || 'male'
-    );
-    
+    const { weightKg, heightCm, age, sex } = toMetricForBMR(formData);
+    const bmr = calculateBMR(weightKg, heightCm, age, sex);
+
     const calories = calculateCalories(bmr, formData.activityLevel, formData.goal);
     const macros = calculateMacros(calories, formData.goal);
-    
+
     return { calories, macros };
   }, [formData]);
 
@@ -226,7 +262,13 @@ const Onboarding = ({
       case 'goal':
         return !!formData.goal;
       case 'info':
-        return formData.sex && formData.age && formData.height && formData.weight;
+        if (!formData.sex || !formData.age) return false;
+        if (formData.units === 'imperial') {
+          const hasFeet = formData.heightFeet !== undefined && formData.heightFeet !== '';
+          const hasInches = formData.heightInches !== undefined; // '' means 0
+          return hasFeet && hasInches && formData.weight !== '' && formData.weight !== undefined;
+        }
+        return formData.height && formData.weight;
       case 'activity':
         return !!formData.activityLevel;
       default:
@@ -245,6 +287,7 @@ const Onboarding = ({
             isExiting={isExiting}
             name={formData.name}
             onNameChange={(name) => updateFormData('name', name)}
+            onSkipSetup={handleSkip}
           />
         );
       case 'goal':
@@ -301,7 +344,7 @@ const Onboarding = ({
           {currentStep < totalSteps - 1 && (
             <button 
               className="m3-onboarding__skip"
-              onClick={onSkip}
+              onClick={handleSkip}
             >
               Skip
             </button>
@@ -371,7 +414,7 @@ const Onboarding = ({
 
 // ===== Step Components =====
 
-const WelcomeStep = ({ isExiting, name, onNameChange }) => (
+const WelcomeStep = ({ isExiting, name, onNameChange, onSkipSetup }) => (
   <div className={`m3-onboarding__step ${isExiting ? 'm3-onboarding__step--exiting' : ''}`}>
     <div className="m3-onboarding__illustration">
       <div className="m3-onboarding__illustration-container">
@@ -404,6 +447,13 @@ const WelcomeStep = ({ isExiting, name, onNameChange }) => (
           }}
         />
       </div>
+      <button
+        type="button"
+        className="m3-onboarding__skip-setup"
+        onClick={onSkipSetup}
+      >
+        Skip setup — use defaults
+      </button>
     </div>
   </div>
 );
@@ -443,96 +493,140 @@ const GoalStep = ({ isExiting, selected, onSelect }) => (
   </div>
 );
 
-const InfoStep = ({ isExiting, data, onChange }) => (
-  <div className={`m3-onboarding__step ${isExiting ? 'm3-onboarding__step--exiting' : ''}`}>
-    <h1 className="m3-onboarding__title">Tell us about yourself</h1>
-    <p className="m3-onboarding__description">
-      This helps us calculate your daily calorie needs.
-    </p>
-    
-    <div className="m3-onboarding__form">
-      {/* Sex selection */}
-      <div className="m3-onboarding__form-group">
-        <label className="m3-onboarding__form-label">Sex</label>
-        <div className="m3-onboarding__selections" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-          {['male', 'female'].map(sex => (
-            <button
-              key={sex}
-              className={`m3-onboarding__selection ${data.sex === sex ? 'm3-onboarding__selection--selected' : ''}`}
-              onClick={() => onChange('sex', sex)}
-            >
-              <span className="m3-onboarding__selection-label" style={{ textTransform: 'capitalize' }}>
-                {sex}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
+const inputStyle = {
+  width: '100%',
+  padding: '16px',
+  borderRadius: '12px',
+  border: '1px solid var(--m3-outline-variant)',
+  background: 'var(--m3-surface-container)',
+  fontSize: '16px'
+};
 
-      {/* Age */}
-      <div className="m3-onboarding__form-group">
-        <label className="m3-onboarding__form-label">Age</label>
-        <input
-          type="number"
-          inputMode="numeric"
-          placeholder="Years"
-          value={data.age}
-          onChange={(e) => onChange('age', e.target.value)}
-          min={13}
-          max={120}
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '12px',
-            border: '1px solid var(--m3-outline-variant)',
-            background: 'var(--m3-surface-container)',
-            fontSize: '16px'
-          }}
-        />
-      </div>
+const InfoStep = ({ isExiting, data, onChange }) => {
+  const isImperial = data.units === 'imperial';
 
-      {/* Height & Weight */}
-      <div className="m3-onboarding__form-row">
+  return (
+    <div className={`m3-onboarding__step ${isExiting ? 'm3-onboarding__step--exiting' : ''}`}>
+      <h1 className="m3-onboarding__title">Tell us about yourself</h1>
+      <p className="m3-onboarding__description">
+        This helps us calculate your daily calorie needs.
+      </p>
+
+      <div className="m3-onboarding__form">
+        {/* Unit toggle */}
         <div className="m3-onboarding__form-group">
-          <label className="m3-onboarding__form-label">Height (cm)</label>
+          <label className="m3-onboarding__form-label">Units</label>
+          <div className="m3-onboarding__selections" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            {[
+              { id: 'metric', label: 'Metric (cm, kg)' },
+              { id: 'imperial', label: 'Imperial (ft, lb)' }
+            ].map(({ id, label }) => (
+              <button
+                key={id}
+                type="button"
+                className={`m3-onboarding__selection ${data.units === id ? 'm3-onboarding__selection--selected' : ''}`}
+                onClick={() => onChange('units', id)}
+              >
+                <span className="m3-onboarding__selection-label">{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sex selection */}
+        <div className="m3-onboarding__form-group">
+          <label className="m3-onboarding__form-label">Sex</label>
+          <div className="m3-onboarding__selections" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            {['male', 'female'].map(sex => (
+              <button
+                key={sex}
+                type="button"
+                className={`m3-onboarding__selection ${data.sex === sex ? 'm3-onboarding__selection--selected' : ''}`}
+                onClick={() => onChange('sex', sex)}
+              >
+                <span className="m3-onboarding__selection-label" style={{ textTransform: 'capitalize' }}>
+                  {sex}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Age */}
+        <div className="m3-onboarding__form-group">
+          <label className="m3-onboarding__form-label">Age</label>
           <input
             type="number"
-            inputMode="decimal"
-            placeholder="170"
-            value={data.height}
-            onChange={(e) => onChange('height', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '16px',
-              borderRadius: '12px',
-              border: '1px solid var(--m3-outline-variant)',
-              background: 'var(--m3-surface-container)',
-              fontSize: '16px'
-            }}
+            inputMode="numeric"
+            placeholder="Years"
+            value={data.age}
+            onChange={(e) => onChange('age', e.target.value)}
+            min={13}
+            max={120}
+            style={inputStyle}
           />
         </div>
-        <div className="m3-onboarding__form-group">
-          <label className="m3-onboarding__form-label">Weight (kg)</label>
-          <input
-            type="number"
-            inputMode="decimal"
-            placeholder="70"
-            value={data.weight}
-            onChange={(e) => onChange('weight', e.target.value)}
-            style={{
-              width: '100%',
-              padding: '16px',
-              borderRadius: '12px',
-              border: '1px solid var(--m3-outline-variant)',
-              background: 'var(--m3-surface-container)',
-              fontSize: '16px'
-            }}
-          />
+
+        {/* Height & Weight */}
+        <div className="m3-onboarding__form-row">
+          {isImperial ? (
+            <>
+              <div className="m3-onboarding__form-group">
+                <label className="m3-onboarding__form-label">Height (ft)</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="5"
+                  value={data.heightFeet}
+                  onChange={(e) => onChange('heightFeet', e.target.value)}
+                  min={3}
+                  max={8}
+                  style={inputStyle}
+                />
+              </div>
+              <div className="m3-onboarding__form-group">
+                <label className="m3-onboarding__form-label">Height (in)</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="10"
+                  value={data.heightInches}
+                  onChange={(e) => onChange('heightInches', e.target.value)}
+                  min={0}
+                  max={11}
+                  style={inputStyle}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="m3-onboarding__form-group" style={{ gridColumn: '1 / -1' }}>
+              <label className="m3-onboarding__form-label">Height (cm)</label>
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="170"
+                value={data.height}
+                onChange={(e) => onChange('height', e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+          )}
+          <div className={`m3-onboarding__form-group ${!isImperial ? '' : ''}`} style={isImperial ? {} : { gridColumn: '1 / -1' }}>
+            <label className="m3-onboarding__form-label">Weight ({isImperial ? 'lb' : 'kg'})</label>
+            <input
+              type="number"
+              inputMode="decimal"
+              placeholder={isImperial ? '160' : '70'}
+              value={data.weight}
+              onChange={(e) => onChange('weight', e.target.value)}
+              style={inputStyle}
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ActivityStep = ({ isExiting, selected, onSelect }) => (
   <div className={`m3-onboarding__step ${isExiting ? 'm3-onboarding__step--exiting' : ''}`}>

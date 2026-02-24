@@ -7,9 +7,10 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { SyncStatusProvider, useSyncStatus } from "./contexts/SyncStatusContext";
 import { Analytics } from "@vercel/analytics/react";
-import { WifiOff } from "lucide-react";
+import { WifiOff, X } from "lucide-react";
 import "./App.css";
 
 // Design System
@@ -30,6 +31,8 @@ import DesktopSidebar from "./components/DesktopSidebar";
 import ErrorBoundary from "./components/ErrorBoundary";
 import "./components/ErrorBoundary.css";
 import FloatingActionButton from "./components/FloatingActionButton";
+import InstallBanner from "./components/InstallBanner";
+import UpdateBanner from "./components/UpdateBanner";
 import Onboarding from "./components/Onboarding";
 import { TooltipProvider } from "./components/OnboardingTooltips";
 
@@ -40,6 +43,10 @@ import HistoryPage from "./pages/HistoryPage";
 import ProfilePage from "./pages/ProfilePage";
 import RecipesPage from "./pages/RecipesPage";
 import TemplatesPage from "./pages/TemplatesPage";
+import LoginPage from "./pages/LoginPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+import CoachPage from "./pages/CoachPage";
 
 // Utils
 import {
@@ -58,28 +65,61 @@ import {
   getTotalCaloriesBurned,
   loadStreakData,
   loadPreferences,
+  setSyncBridge,
 } from "./utils/localStorage";
+import {
+  syncToCloud,
+  syncRecipesToCloud,
+  syncTemplatesToCloud,
+  uploadLocalToCloud,
+} from "./services/syncService";
+import { setRecipeSyncCallback } from "./services/recipeDatabase";
+import { setTemplateSyncCallback } from "./services/templateDatabase";
+import {
+  startReminderScheduler,
+  stopReminderScheduler,
+} from "./services/notificationService";
 
-// Page transition wrapper with animations
+// Registers sync bridge when user is signed in; updates sync status
+function SyncBridgeSetup() {
+  const { user } = useAuth();
+  const { setStatus, setLastSyncTime } = useSyncStatus();
+  useEffect(() => {
+    if (user) {
+      const uid = user.uid;
+      setSyncBridge((type, payload) => {
+        setStatus("syncing");
+        syncToCloud(uid, type, payload)
+          .then(() => {
+            setStatus("success");
+            setLastSyncTime(new Date());
+          })
+          .catch(() => {
+            setStatus("error");
+          });
+      });
+      setRecipeSyncCallback((recipes) => syncRecipesToCloud(uid, recipes));
+      setTemplateSyncCallback((templates) => syncTemplatesToCloud(uid, templates));
+    } else {
+      setSyncBridge(null);
+      setRecipeSyncCallback(null);
+      setTemplateSyncCallback(null);
+    }
+    return () => {
+      setSyncBridge(null);
+      setRecipeSyncCallback(null);
+      setTemplateSyncCallback(null);
+    };
+  }, [user, setStatus, setLastSyncTime]);
+  return null;
+}
+
+// Page transition wrapper — animations disabled to avoid blank page on tab switch
 function PageWrapper({ children }) {
-  const location = useLocation();
-
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        className="page-wrapper"
-        key={location.pathname}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{
-          duration: 0.25,
-          ease: [0.25, 0.46, 0.45, 0.94],
-        }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <div className="page-wrapper">
+      {children}
+    </div>
   );
 }
 
@@ -97,6 +137,7 @@ function QuickSearchWrapper() {
     registerShortcut("ctrl+l", () => navigate("/log"), "Go to Log");
     registerShortcut("ctrl+r", () => navigate("/recipes"), "Go to Recipes");
     registerShortcut("ctrl+p", () => navigate("/profile"), "Go to Profile");
+    registerShortcut("ctrl+shift+c", () => navigate("/coach"), "Go to AI Coach");
 
     return () => {
       unregisterShortcut("ctrl+k");
@@ -105,11 +146,12 @@ function QuickSearchWrapper() {
       unregisterShortcut("ctrl+l");
       unregisterShortcut("ctrl+r");
       unregisterShortcut("ctrl+p");
+      unregisterShortcut("ctrl+shift+c");
     };
   }, [registerShortcut, unregisterShortcut, navigate]);
 
   const handleSelect = (item) => {
-    if (item.type === "page") {
+    if (item.type === "navigation" || item.type === "page") {
       navigate(item.path);
     } else if (item.type === "food") {
       // Navigate to log page with food to add
@@ -142,6 +184,8 @@ function AppContent({
   setOnboardingStep,
   activities,
   setActivities,
+  isMobile,
+  isStandalone,
 }) {
   const location = useLocation();
   const [caloriesData, setCaloriesData] = useState({ eaten: 0, burned: 0 });
@@ -179,13 +223,19 @@ function AppContent({
   };
 
   const handleNewOnboardingComplete = (data) => {
-    // Map Onboarding.js output to app state
-    // Onboarding uses metric (kg, cm), convert back to imperial for stored profile
-    const weightLbs = data.weight ? Math.round(parseFloat(data.weight) * 2.20462) : 150;
-    const heightCm = parseFloat(data.height) || 170;
-    const heightTotalInches = Math.round(heightCm / 2.54);
-    const heightFeet = Math.floor(heightTotalInches / 12);
-    const heightInches = heightTotalInches % 12;
+    // Map Onboarding.js output to app state (profile stores imperial)
+    let weightLbs, heightFeet, heightInches;
+    if (data.units === "imperial") {
+      weightLbs = Math.round(parseFloat(data.weight) || 160);
+      heightFeet = data.heightFeet?.toString() || "5";
+      heightInches = data.heightInches?.toString() || "10";
+    } else {
+      weightLbs = data.weight ? Math.round(parseFloat(data.weight) * 2.20462) : 150;
+      const heightCm = parseFloat(data.height) || 170;
+      const heightTotalInches = Math.round(heightCm / 2.54);
+      heightFeet = Math.floor(heightTotalInches / 12).toString();
+      heightInches = (heightTotalInches % 12).toString();
+    }
 
     const profile = {
       name: data.name || '',
@@ -264,6 +314,11 @@ function AppContent({
 
   return (
     <>
+      <SyncBridgeSetup />
+      <InstallBanner
+        isMobile={isMobile}
+        isStandalone={isStandalone}
+      />
       <DesktopSidebar
         dailyTarget={dailyTarget}
         caloriesEaten={caloriesData.eaten}
@@ -312,6 +367,10 @@ function AppContent({
                 />
               }
             />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/coach" element={<CoachPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </PageWrapper>
@@ -338,6 +397,7 @@ function App() {
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [offlineBannerDismissed, setOfflineBannerDismissed] = useState(false);
 
   useEffect(() => {
     const standalone =
@@ -379,7 +439,10 @@ function App() {
 
   // Offline detection
   useEffect(() => {
-    const handleOnline = () => setIsOffline(false);
+    const handleOnline = () => {
+      setIsOffline(false);
+      setOfflineBannerDismissed(false);
+    };
     const handleOffline = () => setIsOffline(true);
 
     window.addEventListener("online", handleOnline);
@@ -434,90 +497,38 @@ function App() {
       if (e.detail?.key === "theme" || e.detail?.type === "preferences") {
         const currentPrefs = loadPreferences();
         applyTheme(currentPrefs.theme);
+        if (currentPrefs.notificationsEnabled) {
+          startReminderScheduler();
+        } else {
+          stopReminderScheduler();
+        }
       }
     };
     window.addEventListener("preferenceChange", handlePreferenceChange);
+
+    // Start reminder scheduler if notifications enabled
+    if (preferences.notificationsEnabled) {
+      startReminderScheduler();
+    }
 
     return () => {
       mediaQuery.removeEventListener("change", handleSystemChange);
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("preferenceChange", handlePreferenceChange);
+      stopReminderScheduler();
     };
   }, []);
 
-  // Show loading state
+  // Show loading state - branded experience
   if (isLoading) {
     return (
       <div className="App loading">
-        <div className="loading-spinner" />
-      </div>
-    );
-  }
-
-  // Show install prompt on mobile (not standalone)
-  if (!isStandalone && isMobile) {
-    return (
-      <div className="App">
-        <div className="install-prompt">
-          <div className="install-prompt-content">
-            <div className="install-logo">
-              <img src="/NutriNote.png" alt="NutriNote Logo" />
-            </div>
-            <h1>NutriNote</h1>
-            <p className="install-subtitle">
-              Professional Calorie & Activity Tracker
-            </p>
-
-            <div className="install-message">
-              <h2>Install Required</h2>
-              <p>
-                This app must be installed to your mobile device to work
-                properly.
-              </p>
-            </div>
-
-            <div className="install-instructions">
-              <h3>iOS (iPhone/iPad):</h3>
-              <ol>
-                <li>
-                  Tap the <strong>Share</strong> button (box with arrow)
-                </li>
-                <li>
-                  Scroll down and tap <strong>"Add to Home Screen"</strong>
-                </li>
-                <li>
-                  Tap <strong>"Add"</strong> in the top right
-                </li>
-                <li>Open the app from your home screen</li>
-              </ol>
-
-              <h3>Android (Chrome):</h3>
-              <ol>
-                <li>
-                  Tap the <strong>three dots menu</strong>
-                </li>
-                <li>
-                  Tap <strong>"Add to Home screen"</strong> or{" "}
-                  <strong>"Install app"</strong>
-                </li>
-                <li>
-                  Tap <strong>"Add"</strong> or <strong>"Install"</strong>
-                </li>
-                <li>Open the app from your home screen</li>
-              </ol>
-            </div>
-
-            <div className="install-benefits">
-              <h3>Why Install?</h3>
-              <ul>
-                <li>Works offline - track anytime, anywhere</li>
-                <li>Faster performance</li>
-                <li>Full-screen experience</li>
-                <li>Easy access from your home screen</li>
-                <li>All data stays private on your device</li>
-              </ul>
-            </div>
+        <div className="loading-screen">
+          <div className="loading-screen__logo">
+            <img src="/NutriNote.png" alt="" aria-hidden />
           </div>
+          <div className="loading-screen__spinner" aria-hidden />
+          <p className="loading-screen__label">Loading NutriNote+</p>
         </div>
       </div>
     );
@@ -525,27 +536,39 @@ function App() {
 
   return (
     <BrowserRouter>
+      <AuthProvider>
       <KeyboardShortcutsProvider>
         <A11yProvider>
         <SnackbarProvider>
         <ErrorBoundary>
+          <SyncStatusProvider>
           <div className="App">
             {/* Enhanced skip links for accessibility */}
             <SkipLinks
               links={[
                 { target: "main-content", label: "Skip to main content" },
-                { target: "nav", label: "Skip to navigation" },
+                { target: "navigation", label: "Skip to navigation" },
               ]}
             />
 
             {/* Live region for screen reader announcements */}
             <LiveRegion />
 
+            <UpdateBanner />
+
             {/* Offline indicator */}
-            {isOffline && (
+            {isOffline && !offlineBannerDismissed && (
               <div className="offline-banner" role="alert">
-                <WifiOff size={16} />
+                <WifiOff size={16} aria-hidden />
                 <span>You're offline. Some features may be limited.</span>
+                <button
+                  type="button"
+                  className="offline-banner__dismiss"
+                  onClick={() => setOfflineBannerDismissed(true)}
+                  aria-label="Dismiss offline notice"
+                >
+                  <X size={16} />
+                </button>
               </div>
             )}
 
@@ -565,13 +588,17 @@ function App() {
                 setOnboardingStep={setOnboardingStep}
                 activities={activities}
                 setActivities={setActivities}
+                isMobile={isMobile}
+                isStandalone={isStandalone}
               />
             </TooltipProvider>
           </div>
+          </SyncStatusProvider>
         </ErrorBoundary>
         </SnackbarProvider>
         </A11yProvider>
       </KeyboardShortcutsProvider>
+      </AuthProvider>
       <Analytics />
     </BrowserRouter>
   );

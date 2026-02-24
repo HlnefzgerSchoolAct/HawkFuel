@@ -35,17 +35,25 @@
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--text-xs);
-  color: var(--text-tertiary);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
 }
 
 .legend-dot {
   width: 8px;
   height: 8px;
   border-radius: var(--radius-full);
+  flex-shrink: 0;
 }
 
-.legend-dot.calories { background: var(--primary); }
-.legend-dot.target { background: var(--border-default); }
+.legend-dot.calories {
+  background: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary-blue-glow);
+}
+
+.legend-dot.target {
+  background: var(--border-default);
+}
 
 /* ===== Chart Container ===== */
 .chart-container {

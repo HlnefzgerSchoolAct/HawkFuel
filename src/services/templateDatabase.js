@@ -48,6 +48,17 @@ const STORE_NAME = "templates";
 
 let db = null;
 
+let syncCallback = null;
+export const setTemplateSyncCallback = (cb) => {
+  syncCallback = cb;
+};
+
+const triggerTemplateSync = () => {
+  if (syncCallback) {
+    getAllTemplates().then(syncCallback).catch(() => {});
+  }
+};
+
 /**
  * Initialize the IndexedDB database
  */
@@ -273,6 +284,7 @@ export const saveTemplate = async (templateData) => {
 
     request.onsuccess = () => {
       devLog.log("Template saved:", template.name);
+      triggerTemplateSync();
       resolve(template);
     };
 
@@ -427,6 +439,7 @@ export const deleteTemplate = async (id) => {
 
     request.onsuccess = () => {
       devLog.log("Template deleted:", id);
+      triggerTemplateSync();
       resolve(true);
     };
 

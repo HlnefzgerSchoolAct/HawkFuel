@@ -21,6 +21,7 @@ import {
   Chip,
   ChipGroup,
   BottomSheet,
+  ConfirmDialog,
   VisuallyHidden,
   useAnnounce,
 } from "./common";
@@ -67,6 +68,7 @@ export const EditFoodModal = ({
   const [mealType, setMealType] = useState("snack");
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState({});
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Original values for calculating proportional changes
   const [originalCalories, setOriginalCalories] = useState(0);
@@ -170,10 +172,15 @@ export const EditFoodModal = ({
   };
 
   // Handle delete
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
     onDelete?.(entry);
     haptics.heavy();
     announce("Food entry deleted", "polite");
+    setShowDeleteConfirm(false);
     onClose?.();
   };
 
@@ -200,6 +207,17 @@ export const EditFoodModal = ({
   if (!entry) return null;
 
   return (
+    <>
+    <ConfirmDialog
+      open={showDeleteConfirm}
+      onClose={() => setShowDeleteConfirm(false)}
+      onConfirm={handleDeleteConfirm}
+      title="Delete food entry?"
+      message={`Are you sure you want to delete "${entry.name}"? This cannot be undone.`}
+      confirmText="Delete"
+      cancelText="Cancel"
+      destructive
+    />
     <BottomSheet
       open={open}
       onClose={onClose}
@@ -370,7 +388,7 @@ export const EditFoodModal = ({
           <M3Button
             variant="outlined"
             icon={<Trash2 size={18} />}
-            onClick={handleDelete}
+            onClick={handleDeleteClick}
             className="edit-food-modal__delete-btn"
           >
             Delete
@@ -394,6 +412,7 @@ export const EditFoodModal = ({
         </div>
       </div>
     </BottomSheet>
+    </>
   );
 };
 

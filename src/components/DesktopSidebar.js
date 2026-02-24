@@ -9,12 +9,15 @@ import {
   Target,
   ChefHat,
   LayoutTemplate,
+  MessageCircle,
 } from "lucide-react";
+import SyncStatusIndicator from "./SyncStatusIndicator";
 import "./DesktopSidebar.css";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/log", label: "Log Food", icon: UtensilsCrossed },
+  { path: "/coach", label: "Coach", icon: MessageCircle },
   { path: "/recipes", label: "Recipes", icon: ChefHat },
   { path: "/templates", label: "Templates", icon: LayoutTemplate },
   { path: "/history", label: "History", icon: Calendar },
@@ -47,7 +50,7 @@ function DesktopSidebar({
         </div>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav id="navigation" className="sidebar-nav" aria-label="Main navigation">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -72,6 +75,7 @@ function DesktopSidebar({
       </nav>
 
       <div className="sidebar-footer">
+        <SyncStatusIndicator />
         <div className="sidebar-quick-stats">
           <div className="sidebar-stat">
             <span className="sidebar-stat-label">

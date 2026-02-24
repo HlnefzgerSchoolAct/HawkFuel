@@ -1,4 +1,5 @@
 import React from "react";
+import * as Sentry from "@sentry/react";
 
 /**
  * Error Boundary Component
@@ -16,8 +17,12 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // In production, you could send this to an error tracking service
-    if (process.env.NODE_ENV === "development") {
+    try {
+      if (typeof Sentry !== "undefined" && Sentry.captureException) {
+        Sentry.captureException(error, { extra: errorInfo });
+      }
+    } catch (_) {}
+    if (import.meta.env.DEV) {
       console.error("ErrorBoundary caught an error:", error, errorInfo);
     }
   }

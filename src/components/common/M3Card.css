@@ -92,13 +92,20 @@
 }
 
 .m3-card--outlined.m3-card--interactive:focus-visible {
-  border-color: var(--m3-primary, #65c466);
+  border-color: var(--m3-primary);
 }
 
 /* ===== Card Focus ===== */
 .m3-card:focus-visible {
-  outline: 2px solid var(--m3-focus-ring, var(--m3-primary, #65c466));
+  outline: 2px solid var(--m3-focus-ring, var(--m3-primary));
   outline-offset: 2px;
+}
+
+/* Subtle lift on hover for interactive elevated cards */
+@media (hover: hover) and (pointer: fine) {
+  .m3-card--elevated.m3-card--interactive:hover {
+    transform: translateY(-2px);
+  }
 }
 
 /* ===== Card Header ===== */
@@ -343,7 +350,7 @@
 
 /* ===== Selection States ===== */
 .m3-card--selected {
-  border: 2px solid var(--m3-primary, #65c466);
+  border: 2px solid var(--m3-primary);
 }
 
 .m3-card--selected.m3-card--elevated {
@@ -358,7 +365,7 @@
   width: 24px;
   height: 24px;
   border-radius: var(--m3-shape-full, 12px);
-  background-color: var(--m3-primary, #65c466);
+  background-color: var(--m3-primary);
   color: var(--m3-on-primary, #003910);
   display: flex;
   align-items: center;

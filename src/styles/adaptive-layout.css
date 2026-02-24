@@ -107,7 +107,7 @@
 }
 
 .m3-top-bar__btn:focus-visible {
-  outline: 2px solid var(--m3-primary, #65c466);
+  outline: 2px solid var(--m3-primary);
   outline-offset: 2px;
 }
 
@@ -289,7 +289,7 @@
 .m3-section__action {
   font-size: var(--m3-typescale-label-large-size, 14px);
   font-weight: var(--m3-typescale-label-large-weight, 500);
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
   text-decoration: none;
 }
 

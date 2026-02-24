@@ -46,6 +46,17 @@ const STORE_NAME = "recipes";
 
 let db = null;
 
+let syncCallback = null;
+export const setRecipeSyncCallback = (cb) => {
+  syncCallback = cb;
+};
+
+const triggerRecipeSync = () => {
+  if (syncCallback) {
+    getAllRecipes().then(syncCallback).catch(() => {});
+  }
+};
+
 /**
  * Initialize the IndexedDB database
  */
@@ -217,6 +228,7 @@ export const saveRecipe = async (recipeData) => {
 
     request.onsuccess = () => {
       devLog.log("Recipe saved:", recipe.name);
+      triggerRecipeSync();
       resolve(recipe);
     };
 
@@ -324,6 +336,7 @@ export const deleteRecipe = async (id) => {
 
     request.onsuccess = () => {
       devLog.log("Recipe deleted:", id);
+      triggerRecipeSync();
       resolve(true);
     };
 
