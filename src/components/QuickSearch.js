@@ -25,6 +25,7 @@ import {
   Settings,
   User,
   History,
+  MessageCircle,
 } from "lucide-react";
 import { haptics } from "../utils/haptics";
 import { loadRecentFoods } from "../utils/localStorage";
@@ -49,6 +50,7 @@ const CATEGORIES = {
 const NAVIGATION_ITEMS = [
   { id: "home", name: "Home", path: "/", icon: Home },
   { id: "log", name: "Food Log", path: "/log", icon: ClipboardList },
+  { id: "coach", name: "AI Coach", path: "/coach", icon: MessageCircle },
   { id: "history", name: "History", path: "/history", icon: History },
   { id: "recipes", name: "Recipes", path: "/recipes", icon: BookOpen },
   { id: "profile", name: "Profile", path: "/profile", icon: User },
@@ -72,8 +74,21 @@ const useDebounce = (value, delay) => {
 /**
  * Quick Search Component
  */
-export const QuickSearch = ({ isOpen, onClose, onSelectFood }) => {
+export const QuickSearch = ({ isOpen, onClose, onSelect, onSelectFood }) => {
   const navigate = useNavigate();
+
+  const defaultHandleSelect = useCallback(
+    (item) => {
+      if (item.type === "navigation") {
+        navigate(item.path);
+      } else if (item.type === "food") {
+        onSelectFood?.(item);
+      }
+    },
+    [navigate, onSelectFood],
+  );
+
+  const handleItemSelect = onSelect || defaultHandleSelect;
   const inputRef = useRef(null);
   const listRef = useRef(null);
 
@@ -195,16 +210,10 @@ export const QuickSearch = ({ isOpen, onClose, onSelectFood }) => {
   const handleSelect = useCallback(
     (item) => {
       haptics.selection();
-
-      if (item.type === "navigation") {
-        navigate(item.path);
-        onClose();
-      } else if (item.type === "food") {
-        onSelectFood?.(item);
-        onClose();
-      }
+      handleItemSelect(item);
+      onClose();
     },
-    [navigate, onClose, onSelectFood],
+    [handleItemSelect, onClose],
   );
 
   // Keyboard navigation
