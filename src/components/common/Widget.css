@@ -324,7 +324,7 @@
 }
 
 .m3-widget--interactive:focus-visible {
-  outline: 2px solid var(--m3-focus-ring, var(--m3-primary, #65c466));
+  outline: 2px solid var(--m3-focus-ring, var(--m3-primary));
   outline-offset: 2px;
 }
 
@@ -341,7 +341,7 @@
 }
 
 .m3-widget--drop-target {
-  outline: 2px dashed var(--m3-primary, #65c466);
+  outline: 2px dashed var(--m3-primary);
   outline-offset: -2px;
   opacity: 0.7;
 }
@@ -494,7 +494,7 @@
 }
 
 .m3-widget--add:hover {
-  border-color: var(--m3-primary, #65c466);
+  border-color: var(--m3-primary);
   background-color: rgba(101, 196, 102, 0.08);
 }
 

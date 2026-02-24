@@ -238,9 +238,6 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
-  white-space: nowrap;
-  flex-shrink: 0;
-}
 
 /* ...existing code... */
 .ai-source-badge--usda {
@@ -283,7 +280,6 @@
 
 .ai-usda-link:hover {
   color: var(--text-link-hover, #0369a1);
-}
 }
 
 .ai-nutrition-grid {

@@ -1,10 +1,29 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import * as Sentry from "@sentry/react";
 import "./tailwind.css";
 import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
+
+const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration({
+        maskAllText: true,
+        blockAllMedia: true,
+      }),
+    ],
+    tracesSampleRate: 0.1,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    environment: import.meta.env.MODE,
+  });
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,14 +34,9 @@ root.render(
 
 serviceWorkerRegistration.register({
   onUpdate: (registration) => {
-    // Notify user that a new version is available
-    const updateAvailable = window.confirm(
-      "A new version of NutriNote+ is available. Reload to update?",
+    window.dispatchEvent(
+      new CustomEvent("sw-update-available", { detail: { registration } })
     );
-    if (updateAvailable && registration.waiting) {
-      registration.waiting.postMessage({ type: "SKIP_WAITING" });
-      window.location.reload();
-    }
   },
 });
 reportWebVitals();

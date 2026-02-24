@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   loadPreferences,
   savePreferences,
@@ -18,14 +19,30 @@ import {
 } from "../utils/localStorage";
 import { createFocusTrap } from "../utils/a11y";
 import DataManagementSheet from "./DataManagement";
+import { ConfirmDialog } from "./common";
+import { useAuth } from "../contexts/AuthContext";
+import { deleteUserCloudData } from "../services/syncService";
+import {
+  requestPermission,
+  startReminderScheduler,
+  stopReminderScheduler,
+} from "../services/notificationService";
+import { useTooltip } from "./OnboardingTooltips";
+import { useKeyboardShortcuts } from "./KeyboardShortcuts";
 import "./Settings.css";
 
 function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTargetUpdate }) {
+  const navigate = useNavigate();
+  const { user, signOut, deleteAccount, isFirebaseConfigured } = useAuth();
+  const { resetTooltips } = useTooltip();
+  const { setShowHelp } = useKeyboardShortcuts();
   const [preferences, setPreferences] = useState(loadPreferences());
   const [macroGoals, setMacroGoals] = useState(loadMacroGoals());
   const [profile, setProfile] = useState(loadUserProfile());
   const [activeTab, setActiveTab] = useState("general");
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showDeleteAccountConfirm, setShowDeleteAccountConfirm] = useState(false);
   const [showDataManagement, setShowDataManagement] = useState(false);
   const [customMacros, setCustomMacros] = useState({
     protein: macroGoals.percentages?.protein || 30,
@@ -179,8 +196,28 @@ function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTarget
   };
 
   const handleResetTutorial = () => {
+    setShowResetConfirm(true);
+  };
+
+  const handleResetTutorialConfirm = () => {
     resetOnboarding();
+    setShowResetConfirm(false);
     window.location.reload();
+  };
+
+  const handleDeleteAccountConfirm = async () => {
+    if (!user) return;
+    try {
+      await deleteUserCloudData(user.uid);
+      await deleteAccount();
+      clearAllData();
+      setShowDeleteAccountConfirm(false);
+      onClose();
+      window.location.reload();
+    } catch (err) {
+      console.error("Delete account failed:", err);
+      alert(err.message || "Failed to delete account. Please try again.");
+    }
   };
 
   if (!isOpen) return null;
@@ -266,6 +303,33 @@ function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTarget
         <div className="settings-content">
           {activeTab === "general" && (
             <div className="settings-section">
+              {isFirebaseConfigured() && (
+                <div className="setting-item setting-item-account">
+                  <div className="setting-info">
+                    <span className="setting-label">Account</span>
+                    <span className="setting-description">
+                      {user ? `Signed in as ${user.email}` : "Sign in to sync data across devices"}
+                    </span>
+                  </div>
+                  {user ? (
+                    <button
+                      type="button"
+                      className="settings-link"
+                      onClick={() => signOut()}
+                    >
+                      Sign out
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="settings-link settings-link-primary"
+                      onClick={() => { onClose(); navigate("/login"); }}
+                    >
+                      Sign in
+                    </button>
+                  )}
+                </div>
+              )}
               <h3>Food Logging</h3>
 
               <div className="setting-item">
@@ -309,6 +373,84 @@ function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTarget
                   <option value="auto">Estimate from calories</option>
                 </select>
               </div>
+
+              <h3>Notifications</h3>
+
+              <div className="setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Meal reminders</span>
+                  <span className="setting-description">
+                    Get notified to log breakfast, lunch, and dinner
+                  </span>
+                </div>
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={preferences.notificationsEnabled ?? false}
+                    onChange={async (e) => {
+                      const enabled = e.target.checked;
+                      if (enabled) {
+                        const perm = await requestPermission();
+                        if (perm !== "granted") {
+                          return;
+                        }
+                        startReminderScheduler();
+                      } else {
+                        stopReminderScheduler();
+                      }
+                      handlePreferenceChange("notificationsEnabled", enabled);
+                    }}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+
+              {preferences.notificationsEnabled && (
+                <div className="reminder-times">
+                  <div className="reminder-time-row">
+                    <label>Breakfast</label>
+                    <input
+                      type="time"
+                      value={preferences.reminderBreakfast ?? "08:00"}
+                      onChange={(e) =>
+                        handlePreferenceChange(
+                          "reminderBreakfast",
+                          e.target.value
+                        )
+                      }
+                      className="setting-time-input"
+                    />
+                  </div>
+                  <div className="reminder-time-row">
+                    <label>Lunch</label>
+                    <input
+                      type="time"
+                      value={preferences.reminderLunch ?? "12:30"}
+                      onChange={(e) =>
+                        handlePreferenceChange(
+                          "reminderLunch",
+                          e.target.value
+                        )
+                      }
+                      className="setting-time-input"
+                    />
+                  </div>
+                  <div className="reminder-time-row">
+                    <label>Dinner</label>
+                    <input
+                      type="time"
+                      value={preferences.reminderDinner ?? "18:30"}
+                      onChange={(e) =>
+                        handlePreferenceChange(
+                          "reminderDinner",
+                          e.target.value
+                        )
+                      }
+                      className="setting-time-input"
+                    />
+                  </div>
+                </div>
+              )}
 
               <h3>Appearance</h3>
 
@@ -389,6 +531,66 @@ function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTarget
                     <span>System</span>
                   </button>
                 </div>
+              </div>
+
+              <h3>Help</h3>
+              <div className="setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Keyboard shortcuts</span>
+                  <span className="setting-description">
+                    View all available shortcuts (or press Shift+?)
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="setting-action-btn"
+                  onClick={() => {
+                    onClose();
+                    setShowHelp(true);
+                  }}
+                >
+                  Show shortcuts
+                </button>
+              </div>
+              <div className="setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Feature tips</span>
+                  <span className="setting-description">
+                    Re-show the onboarding tips that guide you through app features
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="setting-action-btn"
+                  onClick={() => {
+                    resetTooltips();
+                    onClose();
+                  }}
+                >
+                  Show tips again
+                </button>
+              </div>
+              <div className="setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Send feedback</span>
+                  <span className="setting-description">
+                    Report bugs, suggest features, or contact support
+                  </span>
+                </div>
+                <a
+                  href={(() => {
+                    const subject = encodeURIComponent("NutriNote+ Feedback");
+                    const body = encodeURIComponent(
+                      `App version: 2.0.0\nPlatform: ${navigator.userAgent}\n\nDescribe your feedback, bug report, or question:\n`
+                    );
+                    return `mailto:support@nutrinote.app?subject=${subject}&body=${body}`;
+                  })()}
+                  className="setting-action-btn setting-action-btn-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Send feedback
+                </a>
               </div>
             </div>
           )}
@@ -763,6 +965,25 @@ function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTarget
                   Restart Setup Wizard
                 </button>
 
+                {isFirebaseConfigured() && user && !showDeleteAccountConfirm && (
+                  <button
+                    className="data-btn danger"
+                    onClick={() => setShowDeleteAccountConfirm(true)}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Delete Account
+                  </button>
+                )}
                 {!showClearConfirm ? (
                   <button
                     className="data-btn danger"
@@ -803,12 +1024,53 @@ function Settings({ isOpen, onClose, onProfileUpdate, dailyTarget, onDailyTarget
                 <h4>About NutriNote+</h4>
                 <p>Version 2.0.0</p>
                 <p>All data is stored locally on your device.</p>
-                <p>No personal information is ever sent to servers.</p>
+                <p>Sign in to sync across devices. No personal data is sold.</p>
+                <div className="about-links">
+                  <button
+                    type="button"
+                    className="setting-link-btn"
+                    onClick={() => { onClose(); navigate("/privacy"); }}
+                  >
+                    Privacy Policy
+                  </button>
+                  <span className="about-links-sep">·</span>
+                  <button
+                    type="button"
+                    className="setting-link-btn"
+                    onClick={() => { onClose(); navigate("/terms"); }}
+                  >
+                    Terms of Service
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Reset Tutorial Confirmation */}
+      <ConfirmDialog
+        open={showResetConfirm}
+        onClose={() => setShowResetConfirm(false)}
+        onConfirm={handleResetTutorialConfirm}
+        title="Restart setup wizard?"
+        message="This will reset your onboarding. You'll need to set up your profile again. Continue?"
+        confirmText="Restart"
+        cancelText="Cancel"
+        destructive
+      />
+
+      {/* Delete Account Confirmation */}
+      <ConfirmDialog
+        open={showDeleteAccountConfirm}
+        onClose={() => setShowDeleteAccountConfirm(false)}
+        onConfirm={handleDeleteAccountConfirm}
+        title="Delete account?"
+        message="This will permanently delete your account and all cloud data. Local data will also be cleared. This cannot be undone."
+        confirmText="Delete account"
+        cancelText="Cancel"
+        destructive
+      />
 
       {/* Data Management Sheet */}
       <DataManagementSheet

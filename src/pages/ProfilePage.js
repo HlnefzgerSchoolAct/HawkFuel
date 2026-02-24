@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   User,
@@ -20,6 +21,8 @@ import {
   Activity,
   Ruler,
   Sparkles,
+  Cloud,
+  LogOut,
 } from "lucide-react";
 import {
   M3Card,
@@ -32,8 +35,10 @@ import {
   Main,
   VisuallyHidden,
 } from "../components/common";
+import AccountBanner from "../components/AccountBanner";
 import HydrationTracker from "../components/HydrationTracker";
 import Settings from "../components/Settings";
+import { useAuth } from "../contexts/AuthContext";
 import {
   loadStreakData,
   loadWeeklyHistory,
@@ -59,7 +64,10 @@ const ACTIVITY_LABELS = {
 };
 
 function ProfilePage({ userProfile, dailyTarget, onProfileUpdate, onDailyTargetUpdate }) {
+  const navigate = useNavigate();
+  const { user, signOut, isFirebaseConfigured } = useAuth();
   const [showSettings, setShowSettings] = useState(false);
+  const [accountBannerDismissed, setAccountBannerDismissed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [streakData, setStreakData] = useState({ currentStreak: 0, longestStreak: 0 });
   const [stats, setStats] = useState({ daysTracked: 0, avgCalories: 0, weightChange: null, totalCaloriesBurned: 0 });
@@ -132,6 +140,14 @@ function ProfilePage({ userProfile, dailyTarget, onProfileUpdate, onDailyTargetU
       <VisuallyHidden>
         <h1>Your Profile</h1>
       </VisuallyHidden>
+
+      {/* Account / Sign-in banner */}
+      {isFirebaseConfigured() && !user && (
+        <AccountBanner
+          dismissed={accountBannerDismissed}
+          onDismiss={() => setAccountBannerDismissed(true)}
+        />
+      )}
 
       {/* Settings Modal */}
       <Settings
@@ -298,6 +314,35 @@ function ProfilePage({ userProfile, dailyTarget, onProfileUpdate, onDailyTargetU
           })}
         </div>
       </motion.section>
+
+      {/* Account section */}
+      {isFirebaseConfigured() && (
+        <motion.section className="mb-5" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}>
+          <SectionHeader icon={<Cloud size={18} />} title="Account" iconClass="text-info" />
+          <M3Card variant="elevated">
+            <M3CardContent>
+              {user ? (
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-body-sm font-medium text-on-surface truncate">{user.email}</p>
+                    <p className="text-label-sm text-on-surface-variant">Synced across devices</p>
+                  </div>
+                  <M3Button variant="outlined" size="small" onClick={() => signOut()} leadingIcon={<LogOut size={18} />}>
+                    Sign out
+                  </M3Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <p className="text-body-sm text-on-surface-variant">Sign in to sync your data across all your devices.</p>
+                  <M3Button variant="filled" onClick={() => navigate("/login")} className="justify-center">
+                    Sign in with Google
+                  </M3Button>
+                </div>
+              )}
+            </M3CardContent>
+          </M3Card>
+        </motion.section>
+      )}
 
       {/* Settings Link */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>

@@ -58,6 +58,7 @@ import {
 } from "../utils/localStorage";
 
 import { haptics } from "../utils/haptics";
+import { FeatureHighlight, APP_TOOLTIPS } from "../components/OnboardingTooltips";
 
 function HomePage({ userProfile, dailyTarget, macroGoals }) {
   const navigate = useNavigate();
@@ -171,6 +172,7 @@ function HomePage({ userProfile, dailyTarget, macroGoals }) {
         <AnimatePresence>
           {streakData.currentStreak > 0 && (
             <StaggerItem>
+              <FeatureHighlight tooltip={APP_TOOLTIPS.STREAK_COUNTER} showBadge={false}>
               <motion.div
                 className="streak-banner flex items-center gap-3 px-4 py-3 mb-4 rounded-full cursor-pointer select-none"
                 initial={{ opacity: 0, y: -20 }}
@@ -199,12 +201,14 @@ function HomePage({ userProfile, dailyTarget, macroGoals }) {
                   aria-hidden="true"
                 />
               </motion.div>
+              </FeatureHighlight>
             </StaggerItem>
           )}
         </AnimatePresence>
 
         {/* ===== Calorie Progress Card ===== */}
         <StaggerItem>
+          <FeatureHighlight tooltip={APP_TOOLTIPS.CALORIE_RING} showBadge={false}>
           <M3Card variant="elevated" className="mb-4">
             <M3CardContent>
               <div className="flex flex-col items-center gap-6 py-4 md:flex-row md:justify-around md:py-6">
@@ -250,6 +254,7 @@ function HomePage({ userProfile, dailyTarget, macroGoals }) {
               </div>
             </M3CardContent>
           </M3Card>
+          </FeatureHighlight>
         </StaggerItem>
 
         {/* ===== Timeframe Selector ===== */}
@@ -405,6 +410,7 @@ function HomePage({ userProfile, dailyTarget, macroGoals }) {
         <StaggerItem>
           <Section title="Quick Actions">
             <Grid columns={2} gap={12}>
+              <FeatureHighlight tooltip={APP_TOOLTIPS.ADD_FOOD_BUTTON} showBadge={false}>
               <M3Button
                 variant="tonal"
                 icon={<Plus size={20} />}
@@ -413,6 +419,7 @@ function HomePage({ userProfile, dailyTarget, macroGoals }) {
               >
                 Log Food
               </M3Button>
+              </FeatureHighlight>
               <M3Button
                 variant="tonal"
                 icon={<Activity size={20} />}

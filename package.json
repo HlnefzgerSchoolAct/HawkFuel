@@ -22,6 +22,7 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@sentry/react": "^10.39.0",
     "@vercel/analytics": "^1.6.1",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
@@ -30,6 +31,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
+    "firebase": "^12.9.0",
     "framer-motion": "^12.30.0",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.563.0",
@@ -51,10 +53,13 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@vitejs/plugin-react": "^5.1.4",
+    "@vitest/ui": "^4.0.18",
     "concurrently": "^9.2.1",
+    "jsdom": "^28.1.0",
     "nodemon": "^3.1.11",
     "tailwindcss": "^4.1.18",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "eslintConfig": {
     "extends": [

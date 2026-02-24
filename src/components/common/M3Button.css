@@ -67,8 +67,8 @@
 
 /* ===== Filled Button (Primary) ===== */
 .m3-btn--filled {
-  background-color: var(--m3-primary, #65c466);
-  color: var(--m3-on-primary, #003910);
+  background-color: var(--m3-primary);
+  color: var(--m3-on-primary);
   box-shadow: none;
 }
 
@@ -82,6 +82,10 @@
 
 .m3-btn--filled:focus-visible::before {
   opacity: var(--m3-state-focus-opacity, 0.12);
+}
+
+.m3-btn--filled:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .m3-btn--filled:active:not(:disabled)::before {
@@ -128,7 +132,7 @@
 /* ===== Elevated Button ===== */
 .m3-btn--elevated {
   background-color: var(--m3-surface-container-low, #f7f2f7);
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
   box-shadow: var(
     --m3-elevation-1,
     0 1px 2px rgba(0, 0, 0, 0.3),
@@ -171,7 +175,7 @@
 /* ===== Outlined Button ===== */
 .m3-btn--outlined {
   background-color: transparent;
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
   border: 1px solid var(--m3-outline, #79747e);
   box-shadow: none;
 }
@@ -181,7 +185,7 @@
 }
 
 .m3-btn--outlined:focus-visible {
-  border-color: var(--m3-primary, #65c466);
+  border-color: var(--m3-primary);
 }
 
 .m3-btn--outlined:focus-visible::before {
@@ -205,7 +209,7 @@
   --m3-btn-min-width: 48px;
 
   background-color: transparent;
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
   box-shadow: none;
 }
 
@@ -386,7 +390,7 @@
 
 .m3-fab--surface {
   background-color: var(--m3-surface-container-high, #ece6ec);
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
 }
 
 /* ===== Button Sizes ===== */
@@ -520,7 +524,7 @@
 /* ===== Focus Visible ===== */
 .m3-btn:focus-visible,
 .m3-fab:focus-visible {
-  outline: 2px solid var(--m3-focus-ring, var(--m3-primary, #65c466));
+  outline: 2px solid var(--m3-focus-ring, var(--m3-primary));
   outline-offset: 2px;
 }
 

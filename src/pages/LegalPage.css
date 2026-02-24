@@ -1,0 +1,107 @@
+.legal-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
+  padding-bottom: calc(var(--space-xl) + env(safe-area-inset-bottom, 0));
+}
+
+.legal-page__header {
+  position: relative;
+  margin-bottom: var(--space-xl);
+}
+
+.legal-page__back {
+  position: absolute;
+  left: 0;
+  top: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.legal-page__back:hover {
+  background: var(--surface-tertiary);
+}
+
+.legal-page__back:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.legal-page__header h1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs);
+  padding-left: 48px;
+}
+
+.legal-page__updated {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  padding-left: 48px;
+}
+
+.legal-page__content {
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.legal-page__content section {
+  margin-bottom: var(--space-xl);
+}
+
+.legal-page__content h2 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  margin: 0 0 var(--space-sm);
+  color: var(--text-primary);
+}
+
+.legal-page__content h3 {
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  margin: var(--space-md) 0 var(--space-xs);
+  color: var(--text-primary);
+}
+
+.legal-page__content p {
+  margin: 0 0 var(--space-sm);
+  color: var(--text-secondary);
+}
+
+.legal-page__content ul {
+  margin: 0 0 var(--space-sm);
+  padding-left: var(--space-lg);
+}
+
+.legal-page__content li {
+  margin-bottom: var(--space-xs);
+  color: var(--text-secondary);
+}
+
+.legal-page__link {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.legal-page__link:hover {
+  text-decoration: none;
+}

@@ -6,19 +6,31 @@
 import React from "react";
 import "./SkipLinks.css";
 
+const DEFAULT_LINKS = [
+  { target: "main-content", label: "Skip to main content" },
+  { target: "navigation", label: "Skip to navigation" },
+];
+
 /**
  * Skip Links Component
  * Place at the top of your app, before any other content
+ * @param {Object} props
+ * @param {Array<{target: string, label: string}>} [props.links] - Optional custom skip links
  */
-export const SkipLinks = () => {
+export const SkipLinks = ({ links = DEFAULT_LINKS }) => {
+  const items = Array.isArray(links) && links.length > 0 ? links : DEFAULT_LINKS;
+
   return (
     <nav className="skip-links" aria-label="Skip links">
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-      <a href="#navigation" className="skip-link">
-        Skip to navigation
-      </a>
+      {items.map((link) => (
+        <a
+          key={link.target}
+          href={`#${link.target}`}
+          className="skip-link"
+        >
+          {link.label}
+        </a>
+      ))}
     </nav>
   );
 };

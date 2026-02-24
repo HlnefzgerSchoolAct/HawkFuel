@@ -163,6 +163,28 @@
 }
 
 /* ===== Responsive ===== */
+/* Very narrow screens: icons only to prevent cramping */
+@media (max-width: 359px) {
+  .bottom-nav-bar {
+    padding-left: 4px;
+    padding-right: 4px;
+    justify-content: space-evenly;
+  }
+
+  .nav-item {
+    min-width: 48px;
+    padding: var(--space-2) var(--space-2);
+  }
+
+  .nav-item-content {
+    width: 44px;
+  }
+
+  .nav-label {
+    display: none;
+  }
+}
+
 @media (min-width: 1025px) {
   .bottom-nav-bar {
     display: none;

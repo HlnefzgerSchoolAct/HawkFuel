@@ -208,7 +208,7 @@ export const useTooltipTrigger = (tooltip, delay = 500) => {
  */
 const TooltipOverlay = () => {
   const { activeTooltip, dismissTooltip } = useTooltip();
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [position, setPosition] = useState({ top: 0, left: 0, width: 280 });
   const [arrowPosition, setArrowPosition] = useState({ left: "50%" });
 
   // Calculate position based on target element
@@ -218,8 +218,9 @@ const TooltipOverlay = () => {
     const updatePosition = () => {
       const target = activeTooltip.targetRef.current;
       const rect = target.getBoundingClientRect();
-      const tooltipHeight = 120;
-      const tooltipWidth = 280;
+      const isNarrow = window.innerWidth < 400;
+      const tooltipWidth = isNarrow ? Math.min(280, window.innerWidth - 32) : 280;
+      const tooltipHeight = 140;
       const padding = 16;
 
       let top, left;
@@ -256,7 +257,7 @@ const TooltipOverlay = () => {
         Math.min(targetCenter - left, tooltipWidth - 24),
       );
 
-      setPosition({ top, left });
+      setPosition({ top, left, width: tooltipWidth });
       setArrowPosition({ left: `${arrowLeft}px` });
     };
 
@@ -291,7 +292,7 @@ const TooltipOverlay = () => {
           {/* Tooltip */}
           <motion.div
             className={`tooltip-overlay__tooltip tooltip-overlay__tooltip--${activeTooltip.position || "bottom"}`}
-            style={{ top: position.top, left: position.left }}
+            style={{ top: position.top, left: position.left, width: position.width, maxWidth: "calc(100vw - 32px)" }}
             initial={{ opacity: 0, scale: 0.9, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 10 }}

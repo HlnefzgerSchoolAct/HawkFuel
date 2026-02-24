@@ -67,6 +67,7 @@ import {
   getMealTypeByTime,
 } from "../utils/localStorage";
 import { haptics } from "../utils/haptics";
+import { FeatureHighlight, APP_TOOLTIPS } from "../components/OnboardingTooltips";
 
 const TAB_SEGMENTS = [
   { value: "food", label: "Food", icon: <Utensils size={18} /> },
@@ -347,6 +348,7 @@ function LogPage({ userProfile, dailyTarget }) {
             {/* AI Food Input */}
             <AnimatePresence mode="wait">
               {(inputMode === "ai" || !isMobile) && (
+                <FeatureHighlight tooltip={APP_TOOLTIPS.AI_SEARCH} showBadge={false}>
                 <motion.div
                   key="ai-input"
                   className="mb-4 overflow-hidden"
@@ -361,12 +363,14 @@ function LogPage({ userProfile, dailyTarget }) {
                     onDescriptionUsed={() => setPrefillFoodDescription("")}
                   />
                 </motion.div>
+                </FeatureHighlight>
               )}
             </AnimatePresence>
 
             {/* Barcode Scanner */}
             <AnimatePresence mode="wait">
               {inputMode === "scan" && isMobile && (
+                <FeatureHighlight tooltip={APP_TOOLTIPS.BARCODE_SCAN} showBadge={false}>
                 <motion.div
                   key="scan-input"
                   className="mb-4 overflow-hidden"
@@ -382,6 +386,7 @@ function LogPage({ userProfile, dailyTarget }) {
                     }}
                   />
                 </motion.div>
+                </FeatureHighlight>
               )}
             </AnimatePresence>
 
@@ -691,6 +696,7 @@ function FoodLogSection({
     <M3Card variant="filled" className="mb-4">
       {/* Header row */}
       <div className="flex items-center">
+        <FeatureHighlight tooltip={APP_TOOLTIPS.MEAL_SECTIONS} showBadge={false}>
         <button
           className="flex-1 flex items-center justify-between px-4 py-3 bg-transparent border-none cursor-pointer text-on-surface min-w-0"
           onClick={() => setShowFoodLog(!showFoodLog)}
@@ -707,7 +713,9 @@ function FoodLogSection({
             <ChevronDown size={18} />
           </motion.div>
         </button>
+        </FeatureHighlight>
 
+        <FeatureHighlight tooltip={APP_TOOLTIPS.COPY_MEALS} showBadge={false}>
         <button
           className="flex items-center justify-center w-10 h-10 mr-2 bg-transparent border border-outline-variant rounded-md text-on-surface-variant cursor-pointer shrink-0 transition-colors duration-150 hover:bg-surface-container hover:text-on-surface hover:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           onClick={onCopyMeals}
@@ -716,6 +724,7 @@ function FoodLogSection({
         >
           <Copy size={16} />
         </button>
+        </FeatureHighlight>
       </div>
 
       <AnimatePresence>
@@ -731,7 +740,7 @@ function FoodLogSection({
               <EmptyState type="food-log" onAction={onEmptyAction} className="compact" />
             ) : (
               <>
-                {MEAL_ORDER.map((meal) =>
+                {MEAL_ORDER.map((meal, mealIndex) =>
                   groupedFood[meal]?.length > 0 ? (
                     <MealGroup
                       key={meal}
@@ -740,6 +749,7 @@ function FoodLogSection({
                       onEdit={onEditFood}
                       onDelete={onDeleteFood}
                       onToggleFavorite={onToggleFavorite}
+                      showSwipeTooltip={mealIndex === 0}
                     />
                   ) : null,
                 )}
@@ -759,14 +769,15 @@ function FoodLogSection({
 }
 
 /** Single meal group (Breakfast, Lunch, etc.) */
-function MealGroup({ meal, entries, onEdit, onDelete, onToggleFavorite }) {
+function MealGroup({ meal, entries, onEdit, onDelete, onToggleFavorite, showSwipeTooltip }) {
   return (
     <div className="px-3 py-3 border-b border-outline-variant last:border-b-0">
       <h4 className="text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
         {meal.charAt(0).toUpperCase() + meal.slice(1)}
       </h4>
       <div className="flex flex-col gap-2">
-        {entries.map((entry) => (
+        {entries.map((entry, entryIndex) => {
+          const item = (
           <SwipeableItem
             key={entry.id}
             onDelete={() => onDelete(entry)}
@@ -811,7 +822,15 @@ function MealGroup({ meal, entries, onEdit, onDelete, onToggleFavorite }) {
               </span>
             </div>
           </SwipeableItem>
-        ))}
+          );
+          return showSwipeTooltip && entryIndex === 0 ? (
+            <FeatureHighlight key={entry.id} tooltip={APP_TOOLTIPS.SWIPE_TO_DELETE} showBadge={false}>
+              {item}
+            </FeatureHighlight>
+          ) : (
+            <React.Fragment key={entry.id}>{item}</React.Fragment>
+          );
+        })}
       </div>
     </div>
   );

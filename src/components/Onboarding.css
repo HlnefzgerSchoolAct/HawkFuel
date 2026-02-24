@@ -27,15 +27,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: none;
-  border-radius: var(--m3-shape-full, 20px);
+  border-radius: var(--m3-shape-full, 22px);
   background: transparent;
   color: var(--m3-on-surface, #1C1B1F);
   cursor: pointer;
   transition: background-color 200ms var(--m3-motion-easing-standard, ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .m3-onboarding__back:hover {
@@ -48,19 +52,22 @@
 }
 
 .m3-onboarding__skip {
-  padding: 8px 16px;
+  padding: 10px 16px;
+  min-height: 44px;
   border: none;
-  border-radius: var(--m3-shape-full, 20px);
+  border-radius: var(--m3-shape-full, 22px);
   background: transparent;
-  color: var(--m3-primary, #65C466);
+  color: var(--m3-primary);
   font-size: var(--m3-typescale-label-large-size, 14px);
   font-weight: var(--m3-typescale-label-large-weight, 500);
   cursor: pointer;
   transition: background-color 200ms var(--m3-motion-easing-standard, ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .m3-onboarding__skip:hover {
-  background-color: rgba(101, 196, 102, 0.08);
+  background-color: var(--m3-primary-alpha-10, rgba(26, 115, 232, 0.1));
 }
 
 /* ===== Progress Indicator ===== */
@@ -84,11 +91,11 @@
 
 .m3-onboarding__step-dot--active {
   width: 24px;
-  background-color: var(--m3-primary, #65C466);
+  background-color: var(--m3-primary);
 }
 
 .m3-onboarding__step-dot--completed {
-  background-color: var(--m3-primary, #65C466);
+  background-color: var(--m3-primary);
 }
 
 /* Linear progress variant */
@@ -102,7 +109,7 @@
 
 .m3-onboarding__progress-fill {
   height: 100%;
-  background-color: var(--m3-primary, #65C466);
+  background-color: var(--m3-primary);
   border-radius: 2px;
   transition: width 300ms var(--m3-motion-easing-emphasized, ease);
 }
@@ -179,7 +186,7 @@
 .m3-onboarding__illustration-icon {
   position: relative;
   z-index: 1;
-  color: var(--m3-primary, #65C466);
+  color: var(--m3-primary);
 }
 
 /* ===== Step Text ===== */
@@ -230,6 +237,31 @@
   gap: 12px;
 }
 
+.m3-onboarding__form input,
+.m3-onboarding .m3-text-field__input {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.m3-onboarding__skip-setup {
+  margin-top: 8px;
+  padding: 12px 0;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--m3-on-surface-variant, #49454f);
+  font-size: var(--m3-typescale-body-medium-size, 14px);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 200ms var(--m3-motion-easing-standard, ease);
+  touch-action: manipulation;
+}
+
+.m3-onboarding__skip-setup:hover {
+  color: var(--m3-primary);
+}
+
 /* ===== Selection Cards ===== */
 .m3-onboarding__selections {
   display: grid;
@@ -243,6 +275,7 @@
   align-items: center;
   gap: 8px;
   padding: 20px 16px;
+  min-height: 44px;
   border: 2px solid var(--m3-outline-variant, #CAC4D0);
   border-radius: var(--m3-shape-medium, 12px);
   background: transparent;
@@ -251,6 +284,8 @@
     border-color 200ms var(--m3-motion-easing-standard, ease),
     background-color 200ms var(--m3-motion-easing-standard, ease),
     transform 200ms var(--m3-motion-easing-standard, ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .m3-onboarding__selection:hover {
@@ -259,12 +294,12 @@
 }
 
 .m3-onboarding__selection--selected {
-  border-color: var(--m3-primary, #65C466);
+  border-color: var(--m3-primary);
   background-color: var(--m3-primary-container, #A4F5A6);
 }
 
 .m3-onboarding__selection--selected:hover {
-  border-color: var(--m3-primary, #65C466);
+  border-color: var(--m3-primary);
   background-color: var(--m3-primary-container, #A4F5A6);
 }
 
@@ -283,7 +318,7 @@
 }
 
 .m3-onboarding__selection--selected .m3-onboarding__selection-icon {
-  background-color: var(--m3-primary, #65C466);
+  background-color: var(--m3-primary);
   color: var(--m3-on-primary, #003910);
 }
 
@@ -315,6 +350,7 @@
 
 .m3-onboarding__btn {
   flex: 1;
+  min-height: 48px;
   height: 56px;
   border: none;
   border-radius: var(--m3-shape-full, 28px);
@@ -325,10 +361,12 @@
   transition: 
     background-color 200ms var(--m3-motion-easing-standard, ease),
     transform 100ms var(--m3-motion-easing-standard, ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .m3-onboarding__btn--primary {
-  background-color: var(--m3-primary, #65C466);
+  background-color: var(--m3-primary);
   color: var(--m3-on-primary, #003910);
 }
 
@@ -366,6 +404,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
+  min-height: 44px;
   border: 2px solid var(--m3-outline-variant, #CAC4D0);
   border-radius: var(--m3-shape-medium, 12px);
   background: transparent;
@@ -374,6 +413,8 @@
   transition: 
     border-color 200ms var(--m3-motion-easing-standard, ease),
     background-color 200ms var(--m3-motion-easing-standard, ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .m3-onboarding__goal:hover {
@@ -381,7 +422,7 @@
 }
 
 .m3-onboarding__goal--selected {
-  border-color: var(--m3-primary, #65C466);
+  border-color: var(--m3-primary);
   background-color: var(--m3-primary-container, #A4F5A6);
 }
 
@@ -398,7 +439,7 @@
 }
 
 .m3-onboarding__goal--selected .m3-onboarding__goal-icon {
-  background-color: var(--m3-primary, #65C466);
+  background-color: var(--m3-primary);
   color: var(--m3-on-primary, #003910);
 }
 
@@ -437,8 +478,8 @@
 }
 
 .m3-onboarding__goal--selected .m3-onboarding__goal-check {
-  border-color: var(--m3-primary, #65C466);
-  background-color: var(--m3-primary, #65C466);
+  border-color: var(--m3-primary);
+  background-color: var(--m3-primary);
   color: var(--m3-on-primary, #003910);
 }
 

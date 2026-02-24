@@ -54,7 +54,7 @@
 
 .m3-text-field--filled .m3-text-field__container:focus-within {
   border-bottom-width: 2px;
-  border-bottom-color: var(--m3-primary, #65c466);
+  border-bottom-color: var(--m3-primary);
 }
 
 /* Active indicator */
@@ -64,7 +64,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background-color: var(--m3-primary, #65c466);
+  background-color: var(--m3-primary);
   transform: scaleX(0);
   transition: transform 200ms var(--m3-motion-easing-standard, ease);
 }
@@ -90,7 +90,7 @@
 
 .m3-text-field--outlined .m3-text-field__container:focus-within {
   border-width: 2px;
-  border-color: var(--m3-primary, #65c466);
+  border-color: var(--m3-primary);
 }
 
 /* Outlined label notch */
@@ -119,7 +119,7 @@
   letter-spacing: var(--m3-typescale-body-large-tracking, 0.5px);
   color: var(--m3-on-surface, #1c1b1f);
 
-  caret-color: var(--m3-primary, #65c466);
+  caret-color: var(--m3-primary);
 }
 
 .m3-text-field__input::placeholder {
@@ -177,7 +177,7 @@
 .m3-text-field--filled
   .m3-text-field__container:focus-within
   .m3-text-field__label {
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
 }
 
 /* Label floating state - Outlined */
@@ -194,7 +194,7 @@
 .m3-text-field--outlined
   .m3-text-field__container:focus-within
   .m3-text-field__label {
-  color: var(--m3-primary, #65c466);
+  color: var(--m3-primary);
 }
 
 /* Has leading icon adjustment */
@@ -242,7 +242,7 @@
 }
 
 .m3-text-field__icon-button:focus-visible {
-  outline: 2px solid var(--m3-primary, #65c466);
+  outline: 2px solid var(--m3-primary);
   outline-offset: 2px;
 }
 
